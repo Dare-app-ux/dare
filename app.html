@@ -679,11 +679,11 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
       </div>
       <div id="feed-open-view">
         <div id="feed-list"></div>
-        <div class="inv-blk">
+        <div class="inv-blk" id="invite-block">
           <div style="font-size:28px;margin-bottom:8px">👥</div>
-          <div style="font-size:14px;font-weight:600;margin-bottom:5px">Invite tes amis</div>
-          <div style="font-size:13px;color:var(--mu);margin-bottom:14px;line-height:1.6">Vois leurs preuves quotidiennes et progressez ensemble.</div>
-          <button style="padding:9px 22px;border-radius:100px;border:1px solid var(--bo);background:transparent;color:rgba(240,236,255,.6);font-family:var(--fn);font-weight:600;font-size:13px;cursor:pointer" onclick="showToast(t('toast_copied'))">Inviter des amis</button>
+          <div style="font-size:14px;font-weight:600;margin-bottom:5px" id="invite-title">Invite tes amis</div>
+          <div style="font-size:13px;color:var(--mu);margin-bottom:14px;line-height:1.6" id="invite-sub">Le feed est vide pour l'instant — partage le lien à tes amis pour voir leurs preuves ici.</div>
+          <button style="padding:9px 22px;border-radius:100px;border:1px solid var(--bo);background:transparent;color:rgba(240,236,255,.6);font-family:var(--fn);font-weight:600;font-size:13px;cursor:pointer" onclick="copyInviteLink()" id="invite-btn">Copier le lien d'invitation</button>
         </div>
         <div style="height:12px"></div>
       </div>
@@ -1261,7 +1261,7 @@ function t(key){ return (TRANSLATIONS[S.lang]||TRANSLATIONS.fr)[key] || TRANSLAT
 // ══ STATE ══
 const S = {
   lv:2, name:'Joueur', av:'🦊', bio:'', customAvImg:'', lang:'fr', streak:0, record:0, xp:0, total:0,
-  friends:['Sarah','Max','Julie'],  // liste des amis (par pseudo)
+  friends:[],  // amis ajoutés par pseudo
   cats:{rd:0,mi:0,sp:0,co:0,cr:0},
   isPrivate:false,
   obIdx:0, aMode:'login', done:false, timerSecs:14400, cIdx:0,
@@ -1298,13 +1298,7 @@ const LVS=[{n:'Rookie',min:0,max:100},{n:'Active',min:100,max:250},{n:'Challenge
 const INT={1:{n:'Tranquille',e:'🌱'},2:{n:'Challenge',e:'🔥'},3:{n:'Extrême',e:'💀'}};
 const CAT_COLORS={'Lecture':'var(--bl)','Mindfulness':'var(--gn)','Sport':'var(--or)','Courage':'var(--pk)','Créativité':'var(--pu)'};
 
-const FEED_SEED=[
-  {n:'Sarah',av:'S',bg:'#7c3aed',ch:'Lis 30 pages',cat:'Lecture',cap:"Lu 34 pages d'Atomic Habits. Assis par terre parce que le canapé c'est trop confort. Le chapitre sur l'identité m'a un peu retourné la tête, j'avoue.",time:'22 min',fires:18,em:'📖',aiOk:true,priv:false},
-  {n:'Max',av:'M',bg:'#0ea5e9',ch:'Course 15 min',cat:'Sport',cap:"2.4km. Pas folichon mais j'ai pas arrêté. Jambes comme du beurre fondu après. Je compte ça comme une victoire.",time:'1h 10min',fires:31,em:'🏃',aiOk:true,priv:false},
-  {n:'Julie',av:'J',bg:'#22c55e',ch:'Méditation 15 min',cat:'Mindfulness',cap:"15 minutes. J'ai pensé à ma liste de courses pendant les 5 premières. Puis quelque chose a changé. Bizarre comme sensation.",time:'2h 15min',fires:24,em:'🧘',aiOk:true,priv:true},
-  {n:'Thomas',av:'T',bg:'#f97316',ch:'Parle à un inconnu',cat:'Courage',cap:"J'ai parlé au gars dans la file à la boulangerie. Il m'a donné une recette de kouign-amann. Brest quoi.",time:'3h',fires:42,em:'💬',aiOk:true,priv:false},
-  {n:'Emma',av:'E',bg:'#ec4899',ch:'Crée quelque chose en 20 min',cat:'Créativité',cap:"J'ai dessiné un truc moche pendant 20 minutes. Franchement moche. Mais j'ai fait le défi et c'est ça qui compte.",time:'4h',fires:19,em:'🎨',aiOk:true,priv:false},
-];
+const FEED_SEED=[];  // feed vide — seuls les vrais posts apparaissent
 
 // ══ PWA ══
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});}
@@ -1312,7 +1306,15 @@ let deferredInstall=null;
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;});
 
 // ══ SPLASH ══
-setTimeout(()=>go('splash','onboard'),2800);
+setTimeout(()=>{
+  if(loadSession()){
+    // Session existante — aller directement dans l'app
+    go('splash','app');
+    initApp();
+  } else {
+    go('splash','onboard');
+  }
+},2800);
 
 // ══ OB ══
 function obNext(){if(S.obIdx<2){S.obIdx++;document.getElementById('ob-wrap').style.transform=`translateX(-${S.obIdx*33.333}%)`;document.querySelectorAll('.pip').forEach((p,i)=>p.classList.toggle('on',i===S.obIdx));if(S.obIdx===2)document.getElementById('ob-btn').textContent='Choisir mon niveau →';}else goInt();}
@@ -1326,6 +1328,44 @@ function goAuth(){if(chLv)S.lv=chLv;go('intensity','auth');}
 // ══ AUTH ══
 function swAuth(m){S.aMode=m;document.getElementById('at-l').classList.toggle('on',m==='login');document.getElementById('at-s').classList.toggle('on',m==='signup');document.getElementById('f-un').style.display=m==='signup'?'block':'none';document.getElementById('f-av').style.display=m==='signup'?'block':'none';document.getElementById('auth-btn').textContent=m==='login'?'Se connecter':'Créer mon compte';}
 function pickAv(el){document.querySelectorAll('.av-i').forEach(a=>a.classList.remove('on'));el.classList.add('on');S.av=el.textContent;}
+function saveSession(){
+  // Sauvegarde la session utilisateur
+  const session = {
+    name: S.name, av: S.av, bio: S.bio, customAvImg: S.customAvImg,
+    lang: S.lang, lv: S.lv, streak: S.streak, record: S.record,
+    xp: S.xp, total: S.total, cats: S.cats, isPrivate: S.isPrivate,
+    friends: S.friends, loggedIn: true,
+    joinDate: localStorage.getItem('dare_join_date') || new Date().toLocaleDateString('fr-FR',{month:'long',year:'numeric'})
+  };
+  localStorage.setItem('dare_session', JSON.stringify(session));
+  if(!localStorage.getItem('dare_join_date'))
+    localStorage.setItem('dare_join_date', session.joinDate);
+}
+
+function loadSession(){
+  try {
+    const raw = localStorage.getItem('dare_session');
+    if(!raw) return false;
+    const session = JSON.parse(raw);
+    if(!session.loggedIn) return false;
+    // Restore state
+    S.name = session.name || 'Joueur';
+    S.av = session.av || '🦊';
+    S.bio = session.bio || '';
+    S.customAvImg = session.customAvImg || '';
+    S.lang = session.lang || 'fr';
+    S.lv = session.lv || 2;
+    S.streak = session.streak || 0;
+    S.record = session.record || 0;
+    S.xp = session.xp || 0;
+    S.total = session.total || 0;
+    S.cats = session.cats || {rd:0,mi:0,sp:0,co:0,cr:0};
+    S.isPrivate = session.isPrivate || false;
+    S.friends = session.friends || [];
+    return true;
+  } catch(e) { return false; }
+}
+
 function doAuth(){
   const un=document.getElementById('inp-un').value.trim();
   if(S.aMode==='signup'&&un)S.name=un;
@@ -1371,6 +1411,7 @@ function initApp(){
   }
   setTimeout(showNt,5000);
   setTimeout(applyLang,50); // apply language after DOM ready
+  saveSession(); // persist session
 }
 
 // ══ CHALLENGE ══
@@ -1458,7 +1499,17 @@ async function analyzeVideo(){
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',max_tokens:120,
-        system:`Tu es un validateur anti-triche pour dare., une app de développement personnel. Réponds UNIQUEMENT en JSON: {"ok":true/false,"reason":"max 15 mots en français"}. ok=true si l'image montre une activité liée au défi "${c.t}" ou un effort de développement personnel (lecture, sport, méditation, créativité, etc). ok=false si c'est une image aléatoire sans rapport.`,
+        system:`Tu es un validateur anti-triche STRICT pour dare., une app de développement personnel. Réponds UNIQUEMENT en JSON valide: {"ok":true/false,"reason":"max 15 mots en français"}.
+
+RÈGLES STRICTES selon le défi "${c.t}" :
+- Si le défi contient "lis" ou "lecture" ou "pages" : ok=true UNIQUEMENT si on voit clairement un livre ouvert tenu en main ou une personne en train de lire un livre physique. Des feuilles volantes, exercices, cahiers, écrans = ok=false.
+- Si le défi contient "course" ou "courir" ou "run" : ok=true UNIQUEMENT si on voit une personne qui court dehors ou sur tapis, tenue de sport, chaussures de course en mouvement.
+- Si le défi contient "méditation" ou "calme" : ok=true UNIQUEMENT si on voit une personne assise en position de méditation, yeux fermés, immobile.
+- Si le défi contient "sport" ou "burpees" ou "musculation" : ok=true UNIQUEMENT si on voit une personne en train de faire un exercice physique identifiable.
+- Si le défi contient "écriture" ou "journal" : ok=true UNIQUEMENT si on voit une personne qui écrit à la main sur du papier.
+- Si le défi contient "inconnu" ou "courage" ou "parle" : ok=true UNIQUEMENT si on voit une personne en interaction avec quelqu'un.
+- Image floue, noire, selfie sans action, écran d'ordinateur, documents administratifs, feuilles d'exercices scolaires = toujours ok=false.
+- En cas de doute → ok=false. Mieux vaut refuser que accepter de la triche.`,
         messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:frame}},{type:'text',text:`Cette image correspond-elle au défi : "${c.t}" ?`}]}]
       })
     });
@@ -1545,6 +1596,7 @@ function submitDare(){
   S.feedUnlocked=true;
   FEED_SEED.unshift({n:S.name,av:S.av,bg:'var(--pu2)',ch:c.t,cat:c.cat,cap:document.getElementById('desc-ta').value,time:'À l\'instant',fires:0,em:c.t.includes('li')||c.t.includes('Li')?'📖':c.t.includes('mé')||c.t.includes('Mé')?'🧘':'🎯',aiOk:true,priv:S.isPrivate,own:true,vidBlob:S.videoBlob,selfData:S.selfieData});
   buildFeed();renderXP();renderStreak();renderProfile();
+  saveSession(); // save new streak/xp
   showToast(`✓ Validé ! +${c.xp} XP 🔥`);
 }
 
@@ -1566,6 +1618,9 @@ function renderStreak(){document.getElementById('sk-n').textContent=S.streak;doc
 function updateLvChip(){const m=INT[S.lv];document.getElementById('pro-lv').textContent=`${m.e} ${m.n} — Changer →`;}
 function renderProfile(){
   updateProAvDisplay();
+  const joinDate = localStorage.getItem('dare_join_date') || "aujourd'hui";
+  const sinceEl = document.getElementById('pro-since');
+  if(sinceEl) sinceEl.textContent = 'Membre depuis ' + joinDate;
   document.getElementById('p-tot').textContent=S.total;document.getElementById('p-sk').textContent=S.streak;document.getElementById('p-xp').textContent=S.xp;
   const t=S.total||1;
   const up=(k,ei,fi)=>{const n=S.cats[k];document.getElementById(ei).textContent=n+' défis';document.getElementById(fi).style.width=Math.round((n/t)*100)+'%';};
@@ -1623,6 +1678,7 @@ function saveEditProfile(){
   }
   updateProAvDisplay();
   document.getElementById('edit-profile-modal').classList.remove('open');
+  saveSession();
   showToast(t('toast_saved'));
 }
 function triggerAvatarChange(){ document.getElementById('av-file-input').click(); }
@@ -1805,6 +1861,15 @@ function buildFeed(){
   `).join('');
 }
 function hoverStars(wrap,upTo){if(!wrap)return;const ss=wrap.querySelectorAll('.post-star');ss.forEach((s,i)=>s.style.filter=i<=upTo?'none':'grayscale(1) brightness(.4)');}
+function copyInviteLink(){
+  const url = window.location.href.replace('app.html','').replace(/\/$/, '') + '/app.html';
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(url).then(()=>showToast(t('toast_copied')));
+  } else {
+    showToast(t('toast_copied'));
+  }
+}
+
 function toggleFire(btn,i){const sp=btn.querySelector('span');const fi=FEED_SEED.filter(f=>!f.priv||f.own)[i];if(btn.dataset.f){fi.fires--;delete btn.dataset.f;}else{fi.fires++;btn.dataset.f='1';showToast(t('toast_fire'));}sp.textContent=fi.fires;}
 
 // ══ STAR RATING MODAL ══
@@ -1850,8 +1915,9 @@ function fxd(id,disp){document.getElementById(id).style.display=disp;}
 function doLogout(){
   if(!confirm(t('logout_confirm'))) return;
   if(S.mediaStream)S.mediaStream.getTracks().forEach(t=>t.stop());
+  localStorage.removeItem('dare_session');
   const keepLang = S.lang;
-  Object.assign(S,{lv:2,name:'Joueur',av:'🦊',bio:'',customAvImg:'',lang:keepLang,streak:0,record:0,xp:0,total:0,cats:{rd:0,mi:0,sp:0,co:0,cr:0},isPrivate:false,done:false,timerSecs:14400,cIdx:0,videoBlob:null,selfieData:null,descOk:false,aiOk:false,feedUnlocked:false,mediaStream:null,mediaRecorder:null,recChunks:[],recSecs:0,friends:['Sarah','Max','Julie','Thomas','Emma']});
+  Object.assign(S,{lv:2,name:'Joueur',av:'🦊',bio:'',customAvImg:'',lang:keepLang,streak:0,record:0,xp:0,total:0,cats:{rd:0,mi:0,sp:0,co:0,cr:0},isPrivate:false,done:false,timerSecs:14400,cIdx:0,videoBlob:null,selfieData:null,descOk:false,aiOk:false,feedUnlocked:false,mediaStream:null,mediaRecorder:null,recChunks:[],recSecs:0,friends:[]});
   document.getElementById('ch-card').style.display='';
   document.getElementById('done-card').classList.remove('show');
   retakeVideo();
