@@ -1,0 +1,1871 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="dare.">
+<meta name="theme-color" content="#0a0a0f">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>dare.</title>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Cabinet+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0a0a0f;--s1:#111118;--s2:#18181f;--s3:#222230;--s4:#2c2c3a;
+  --tx:#f0ecff;--mu:#55556a;--bo:rgba(255,255,255,.07);
+  /* multi-color palette */
+  --acc:#e8ff47;--acc-d:#b8cc00;
+  --pu:#c084fc;--pu2:#a855f7;--pu3:#7c3aed;
+  --bl:#38bdf8;--bl2:#0ea5e9;
+  --gn:#4ade80;--gn2:#22c55e;
+  --or:#fb923c;--or2:#f97316;
+  --pk:#f472b6;--pk2:#ec4899;
+  --rd:#f87171;--rd2:#ef4444;
+  --fn:'Clash Display',sans-serif;--bd:'Cabinet Grotesk',sans-serif;
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bot:env(safe-area-inset-bottom,0px);
+}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-family:var(--bd)}
+#root{width:100%;height:100%;max-width:500px;margin:0 auto;position:relative;overflow:hidden;background:var(--bg)}
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;overflow:hidden;transition:opacity .4s cubic-bezier(.4,0,.2,1),transform .4s cubic-bezier(.4,0,.2,1)}
+.scr.off{opacity:0;pointer-events:none;transform:translateY(18px)}
+.scr.out{opacity:0;transform:translateY(-22px)}
+*{scrollbar-width:none}*::-webkit-scrollbar{display:none}
+
+/* ── SPLASH ── */
+#splash{background:var(--bg);align-items:center;justify-content:center;z-index:100;overflow:hidden}
+.sp-bg{position:absolute;inset:0}
+.sp-mesh{position:absolute;inset:0}
+.sp-mesh::before{content:'';position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(192,132,252,.15) 0,transparent 70%);top:-200px;left:-100px;animation:meshA 8s ease-in-out infinite}
+.sp-mesh::after{content:'';position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(56,189,248,.1) 0,transparent 70%);bottom:-150px;right:-100px;animation:meshB 10s ease-in-out infinite}
+@keyframes meshA{0%,100%{transform:translate(0,0)}50%{transform:translate(80px,60px)}}
+@keyframes meshB{0%,100%{transform:translate(0,0)}50%{transform:translate(-60px,-80px)}}
+.sp-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:40px 40px;animation:gridpan 20s linear infinite}
+@keyframes gridpan{from{background-position:0 0}to{background-position:40px 40px}}
+.sp-inner{position:relative;z-index:2;text-align:center}
+.sp-logo-wrap{position:relative;display:inline-block}
+.sp-logo{font-family:var(--fn);font-size:80px;font-weight:700;color:var(--tx);letter-spacing:-2px;animation:logoIn 1s cubic-bezier(.16,1,.3,1) both}
+.sp-logo-glow{position:absolute;inset:-20px;background:radial-gradient(circle,rgba(232,255,71,.12) 0,transparent 70%);animation:logoIn .8s .1s both;pointer-events:none}
+@keyframes logoIn{from{opacity:0;transform:scale(.8) translateY(24px)}to{opacity:1;transform:none}}
+.sp-dot{display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--acc);vertical-align:middle;margin-left:2px;margin-bottom:10px;animation:logoIn .8s .05s both}
+.sp-tag{font-size:12px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:rgba(240,236,255,.3);margin-top:12px;animation:fup .6s .4s both}
+.sp-bar{width:80px;height:1.5px;background:rgba(255,255,255,.08);margin:48px auto 0;overflow:hidden;animation:fup .4s .5s both}
+.sp-fill{height:100%;background:linear-gradient(90deg,var(--pu),var(--acc));animation:spf 2.4s .5s cubic-bezier(.4,0,.2,1) both}
+@keyframes spf{from{width:0}to{width:100%}}
+@keyframes fup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+/* ── ONBOARDING ── */
+#onboard{background:var(--bg);z-index:90}
+.ob-wrap{display:flex;width:300%;height:100%;transition:transform .6s cubic-bezier(.77,0,.18,1)}
+.ob-sl{width:33.333%;flex-shrink:0;padding:calc(var(--safe-top) + 60px) 28px 160px;display:flex;flex-direction:column;position:relative}
+.ob-slide-num{font-family:var(--fn);font-size:120px;font-weight:700;color:rgba(255,255,255,.03);position:absolute;top:50px;right:20px;line-height:1}
+.ob-icon-wrap{width:72px;height:72px;border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:30px;margin-bottom:28px;flex-shrink:0;position:relative;z-index:1}
+.oi-1{background:linear-gradient(135deg,rgba(192,132,252,.25),rgba(56,189,248,.15))}
+.oi-2{background:linear-gradient(135deg,rgba(74,222,128,.2),rgba(56,189,248,.15))}
+.oi-3{background:linear-gradient(135deg,rgba(251,146,60,.2),rgba(244,114,182,.15))}
+.ob-title{font-family:var(--fn);font-size:36px;font-weight:700;line-height:1.1;letter-spacing:-.5px;margin-bottom:14px;position:relative;z-index:1}
+.ob-title .hl{background:linear-gradient(135deg,var(--pu),var(--bl));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.ob-body{font-size:15px;line-height:1.7;color:rgba(240,236,255,.45);position:relative;z-index:1;max-width:300px}
+.ob-phone-preview{flex:1;display:flex;align-items:flex-end;justify-content:flex-end;padding-bottom:10px}
+.ob-mini-phone{width:150px;height:190px;border-radius:26px;background:var(--s2);border:1px solid rgba(255,255,255,.1);overflow:hidden;position:relative;flex-shrink:0}
+.omp-content{padding:12px;height:100%;display:flex;flex-direction:column;gap:6px}
+.omp-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:2px}
+.omp-logo{font-family:var(--fn);font-size:12px;font-weight:700;color:var(--tx)}
+.omp-sk{font-size:10px;color:var(--acc);font-weight:700}
+.omp-card{flex:1;background:var(--s3);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;position:relative;border:1px solid rgba(255,255,255,.06)}
+.omp-em{font-size:26px}
+.omp-label{font-size:8px;color:rgba(240,236,255,.4);font-weight:500}
+.omp-badge{position:absolute;bottom:6px;right:6px;background:rgba(74,222,128,.9);border-radius:20px;padding:2px 7px;font-size:7px;font-weight:700;color:#000}
+.ob-foot{position:absolute;bottom:0;left:0;right:0;padding:20px 24px calc(var(--safe-bot) + 28px);background:linear-gradient(to top,var(--bg) 70%,transparent)}
+.ob-pips{display:flex;gap:6px;margin-bottom:16px}
+.pip{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.15);transition:all .3s}
+.pip.on{width:18px;border-radius:3px;background:var(--acc)}
+.btn-ob{width:100%;padding:17px;border-radius:100px;border:none;background:var(--acc);color:#000;font-family:var(--fn);font-weight:700;font-size:16px;cursor:pointer;letter-spacing:.02em;transition:transform .15s}
+.btn-ob:active{transform:scale(.97)}
+.skip-ob{background:none;border:none;color:var(--mu);font-size:13px;cursor:pointer;margin-top:12px;font-family:var(--bd);display:block;width:100%;text-align:center}
+
+/* ── INTENSITY ── */
+#intensity{background:var(--bg);z-index:85;overflow-y:auto;padding:calc(var(--safe-top) + 52px) 22px calc(var(--safe-bot) + 48px)}
+.int-kicker{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--acc);margin-bottom:12px}
+.int-h{font-family:var(--fn);font-size:38px;font-weight:700;line-height:1.05;letter-spacing:-.5px;margin-bottom:8px}
+.int-sub{font-size:14px;color:rgba(240,236,255,.4);line-height:1.7;margin-bottom:28px}
+.lv-list{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+.lv{border:1.5px solid var(--bo);border-radius:20px;cursor:pointer;transition:all .28s;background:var(--s1);overflow:hidden}
+.lv.sel{border-color:var(--acc)}
+.lv-in{padding:18px}
+.lv-row1{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.lv-em{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.lv-em-1{background:rgba(74,222,128,.1)}
+.lv-em-2{background:rgba(251,146,60,.1)}
+.lv-em-3{background:rgba(244,114,182,.1)}
+.lv-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.lv-check{width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:11px;color:#000;transition:all .25s}
+.lv.sel .lv-check{background:var(--acc);border-color:var(--acc)}
+.lv-diff{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:20px}
+.df-ez{background:rgba(74,222,128,.1);color:var(--gn)}
+.df-md{background:rgba(251,146,60,.1);color:var(--or)}
+.df-hd{background:rgba(244,114,182,.1);color:var(--pk)}
+.lv-name{font-family:var(--fn);font-size:17px;font-weight:600;margin-bottom:5px}
+.lv-desc{font-size:13px;color:rgba(240,236,255,.4);line-height:1.55;margin-bottom:10px}
+.lv-tags{display:flex;flex-wrap:wrap;gap:5px}
+.lv-tag{font-size:11px;padding:3px 10px;border-radius:20px;background:rgba(255,255,255,.04);color:rgba(240,236,255,.3);border:1px solid rgba(255,255,255,.06)}
+.btn-cont{width:100%;padding:17px;border-radius:100px;border:none;background:var(--acc);color:#000;font-family:var(--fn);font-weight:700;font-size:16px;cursor:pointer;transition:opacity .2s}
+.btn-cont:disabled{opacity:.22;cursor:not-allowed}
+
+/* ── AUTH ── */
+#auth{background:var(--bg);padding:calc(var(--safe-top) + 52px) 22px calc(var(--safe-bot) + 48px);z-index:80;overflow-y:auto}
+.auth-logo{font-family:var(--fn);font-size:40px;font-weight:700;letter-spacing:-.5px;margin-bottom:4px}
+.auth-logo em{color:var(--acc);font-style:normal}
+.auth-sub{font-size:14px;color:var(--mu);margin-bottom:28px;line-height:1.6}
+.a-tabs{display:flex;background:var(--s1);border-radius:100px;padding:4px;margin-bottom:22px}
+.a-tab{flex:1;padding:10px;text-align:center;font-size:13px;font-weight:700;border-radius:100px;cursor:pointer;border:none;background:transparent;color:var(--mu);transition:all .2s;font-family:var(--fn)}
+.a-tab.on{background:var(--s3);color:var(--tx)}
+.fld{margin-bottom:13px}
+.fld label{display:block;font-size:10px;font-weight:700;color:var(--mu);letter-spacing:.1em;text-transform:uppercase;margin-bottom:7px}
+.fld input{width:100%;padding:14px 16px;background:var(--s1);border:1.5px solid var(--bo);border-radius:14px;color:var(--tx);font-family:var(--bd);font-size:15px;outline:none;transition:border .2s}
+.fld input:focus{border-color:rgba(232,255,71,.3)}
+.fld input::placeholder{color:rgba(85,85,106,.6)}
+.av-g{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.av-i{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;border:1.5px solid var(--bo);background:var(--s1);transition:all .2s}
+.av-i.on{border-color:var(--acc);background:rgba(232,255,71,.07);transform:scale(1.08)}
+.btn-auth{width:100%;padding:16px;border-radius:100px;border:none;background:var(--acc);color:#000;font-family:var(--fn);font-weight:700;font-size:16px;cursor:pointer;margin-top:6px}
+.a-or{text-align:center;font-size:11px;color:rgba(85,85,106,.6);margin:14px 0;letter-spacing:.1em;text-transform:uppercase}
+.btn-goog{width:100%;padding:14px;border-radius:100px;border:1.5px solid var(--bo);background:var(--s1);color:var(--tx);font-family:var(--fn);font-weight:600;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px}
+
+/* ── APP ── */
+#app{background:var(--bg);display:flex;flex-direction:column}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:calc(var(--safe-top) + 14px) 18px 10px;flex-shrink:0}
+.tb-logo{font-family:var(--fn);font-size:24px;font-weight:700;letter-spacing:-.3px}
+.tb-logo em{color:var(--acc);font-style:normal}
+.tb-center{display:flex;flex-direction:column;align-items:center}
+.tb-day{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(85,85,106,.7)}
+.tb-timer{font-size:13px;font-weight:700;color:var(--acc);letter-spacing:.04em;font-variant-numeric:tabular-nums}
+.tb-r{display:flex;align-items:center;gap:9px}
+.tb-sk{font-size:13px;font-weight:700;color:var(--acc)}
+.tb-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;border:2px solid rgba(232,255,71,.2);background:var(--s2);transition:border .2s}
+.tb-av:hover{border-color:var(--acc)}
+.pages{flex:1;min-height:0;overflow:hidden;position:relative}
+.page{position:absolute;inset:0;overflow-y:auto;display:none;padding-bottom:4px}
+.page.on{display:block}
+.bnav{display:flex;padding:6px 0 calc(var(--safe-bot) + 12px);background:rgba(17,17,24,.95);backdrop-filter:blur(20px);border-top:1px solid var(--bo);flex-shrink:0}
+.bn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:7px 0;border:none;background:transparent;color:var(--mu);font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;transition:color .2s;font-family:var(--fn)}
+.bn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8}
+.bn.on{color:var(--acc)}
+.bn.on svg{stroke:var(--acc)}
+
+/* ── DÉFI PAGE ── */
+/* challenge header */
+.ch-card{margin:10px 14px 0;border-radius:22px;background:var(--s1);border:1px solid var(--bo);overflow:hidden}
+.ch-hd{padding:15px 16px 11px;display:flex;justify-content:space-between;align-items:flex-start}
+.ch-meta{flex:1}
+.ch-kicker{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px}
+.ch-title{font-family:var(--fn);font-size:21px;font-weight:700;line-height:1.2;letter-spacing:-.2px;max-width:230px}
+.ch-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;margin-left:12px}
+.timer-pill{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:100px;border:1px solid rgba(232,255,71,.2);background:rgba(232,255,71,.07)}
+.tp-dot{width:6px;height:6px;border-radius:50%;background:var(--acc);animation:tblink 1.3s infinite}
+@keyframes tblink{0%,100%{opacity:1}50%{opacity:.2}}
+.tp-val{font-size:12px;font-weight:700;color:var(--acc);font-variant-numeric:tabular-nums}
+.xp-pill{font-size:11px;font-weight:700;color:rgba(240,236,255,.35)}
+
+/* VIDEO ZONE — main feature */
+.vid-zone{margin:0 14px;border-radius:16px;overflow:hidden;position:relative;aspect-ratio:4/3;background:var(--s2);cursor:pointer}
+.vz-empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;border:1.5px dashed rgba(255,255,255,.1);border-radius:16px;transition:all .3s}
+.vz-empty:hover{border-color:rgba(232,255,71,.25)}
+.vz-cam{width:60px;height:60px;border-radius:18px;background:rgba(232,255,71,.1);display:flex;align-items:center;justify-content:center;font-size:28px}
+.vz-title{font-size:14px;font-weight:600;color:rgba(240,236,255,.6)}
+.vz-sub{font-size:12px;color:rgba(85,85,106,.8);text-align:center;padding:0 28px;line-height:1.5}
+/* recording state */
+.vz-recording{position:absolute;inset:0;background:#000;display:none;flex-direction:column}
+.vz-viewfinder{flex:1;background:#111;display:flex;align-items:center;justify-content:center;font-size:48px;position:relative}
+.rec-indicator{position:absolute;top:12px;left:12px;display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.6);border-radius:20px;padding:5px 10px}
+.rec-dot{width:8px;height:8px;border-radius:50%;background:var(--rd);animation:recdot .8s infinite}
+@keyframes recdot{0%,100%{opacity:1}50%{opacity:.3}}
+.rec-time{font-size:12px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums}
+.vz-selfie-overlay{position:absolute;top:10px;left:10px;width:72px;height:88px;border-radius:12px;border:2.5px solid rgba(0,0,0,.5);background:var(--s3);display:none;align-items:center;justify-content:center;font-size:22px;overflow:hidden;cursor:pointer}
+.vz-selfie-img{width:100%;height:100%;object-fit:cover;display:none}
+/* video played back */
+.vz-preview{position:absolute;inset:0;display:none}
+.vz-preview-vid{width:100%;height:100%;object-fit:cover}
+.vz-retake{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.65);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.15);border-radius:100px;padding:5px 13px;font-size:12px;font-weight:600;color:#fff;cursor:pointer;display:none;z-index:10}
+/* ai states */
+.vz-checking{position:absolute;bottom:10px;right:10px;display:none;align-items:center;gap:6px;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);border-radius:100px;padding:6px 12px;font-size:12px;font-weight:600;border:1px solid rgba(255,255,255,.1)}
+.spin{width:12px;height:12px;border:2px solid rgba(255,255,255,.2);border-top-color:var(--acc);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.vz-ok{position:absolute;bottom:10px;right:10px;display:none;align-items:center;gap:5px;background:rgba(74,222,128,.92);border-radius:100px;padding:6px 13px;font-size:12px;font-weight:700;color:#000}
+.vz-fail{position:absolute;bottom:10px;right:10px;display:none;align-items:center;gap:5px;background:rgba(248,113,113,.92);border-radius:100px;padding:6px 13px;font-size:12px;font-weight:700;color:#000}
+.vz-record-btn-wrap{position:absolute;bottom:14px;left:0;right:0;display:flex;justify-content:center;gap:16px;align-items:center}
+.vz-rec-btn{width:64px;height:64px;border-radius:50%;background:var(--rd);border:4px solid rgba(255,255,255,.3);cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;font-size:22px}
+.vz-rec-btn.recording{background:var(--s3);border-color:var(--rd);animation:none;transform:scale(.85)}
+.vz-rec-btn.recording::after{content:'';width:22px;height:22px;background:var(--rd);border-radius:4px;position:absolute}
+/* ai message */
+.ai-msg{margin:8px 14px 0;padding:10px 13px;border-radius:12px;font-size:13px;line-height:1.5;display:none}
+.ai-msg.ok{background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);color:var(--gn)}
+.ai-msg.fail{background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.2);color:var(--rd)}
+.ai-msg.loading{background:rgba(232,255,71,.05);border:1px solid rgba(232,255,71,.15);color:rgba(232,255,71,.8)}
+
+/* description */
+.desc-wrap{margin:10px 14px 0}
+.desc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+.desc-lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mu)}
+.desc-cnt{font-size:11px;color:var(--mu)}
+.desc-cnt.ok{color:var(--gn)}
+.desc-ta{width:100%;background:var(--s1);border:1.5px solid var(--bo);border-radius:14px;padding:12px 14px;color:var(--tx);font-family:var(--bd);font-size:14px;resize:none;outline:none;line-height:1.6;min-height:76px;transition:border .2s}
+.desc-ta:focus{border-color:rgba(232,255,71,.25)}
+.desc-ta::placeholder{color:rgba(85,85,106,.55)}
+
+/* validation */
+.val-strip{margin:8px 14px 0;display:flex;align-items:center;gap:8px;padding:10px 13px;background:var(--s1);border-radius:12px;border:1px solid var(--bo)}
+.vs-list{display:flex;gap:10px;flex:1;flex-wrap:wrap}
+.vi{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--mu);transition:color .3s}
+.vi.ok{color:var(--gn)}
+.vi-dot{width:6px;height:6px;border-radius:50%;border:1.5px solid currentColor}
+.vi.ok .vi-dot{background:var(--gn);border-color:var(--gn)}
+.vs-pct{font-size:12px;font-weight:700;color:var(--mu);min-width:32px;text-align:right;transition:color .3s}
+.vs-pct.ok{color:var(--gn)}
+
+/* submit */
+.sub-wrap{padding:10px 14px 0}
+.btn-sub{width:100%;padding:17px;border-radius:100px;border:none;background:var(--s3);color:rgba(240,236,255,.25);font-family:var(--fn);font-weight:700;font-size:16px;cursor:not-allowed;transition:all .4s}
+.btn-sub.rdy{background:var(--acc);color:#000;cursor:pointer;box-shadow:0 6px 30px rgba(232,255,71,.2)}
+.btn-sub.rdy:active{transform:scale(.97)}
+.anti-cheat-note{margin:8px 14px 0;display:flex;align-items:flex-start;gap:7px;padding:9px 12px;background:rgba(248,113,113,.04);border:1px solid rgba(248,113,113,.1);border-radius:10px;font-size:11px;color:rgba(240,236,255,.3);line-height:1.45}
+
+/* DONE CARD */
+.done-card{margin:10px 14px 0;border-radius:22px;background:var(--s1);border:2px solid var(--gn);overflow:hidden;display:none}
+.done-card.show{display:block;animation:popIn .55s cubic-bezier(.16,1,.3,1) both}
+@keyframes popIn{from{opacity:0;transform:scale(.93)}to{opacity:1;transform:none}}
+.dc-top{padding:16px 18px;display:flex;align-items:center;gap:14px;background:rgba(74,222,128,.06);border-bottom:1px solid rgba(74,222,128,.12)}
+.dc-chk{width:46px;height:46px;border-radius:50%;background:var(--gn);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;animation:bop .55s .1s cubic-bezier(.16,1,.3,1) both}
+@keyframes bop{0%{transform:scale(0)}65%{transform:scale(1.18)}100%{transform:scale(1)}}
+.dc-title{font-family:var(--fn);font-size:20px;font-weight:700}
+.dc-sub{font-size:12px;color:rgba(240,236,255,.4);margin-top:2px}
+.dc-media{aspect-ratio:4/3;background:var(--s2);position:relative;overflow:hidden}
+.dc-media-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:40px}
+.dc-vid{width:100%;height:100%;object-fit:cover;display:none}
+.dc-selfie{position:absolute;top:10px;left:10px;width:70px;height:86px;border-radius:10px;border:2.5px solid rgba(0,0,0,.5);object-fit:cover;display:none}
+.dc-caption{padding:12px 16px;font-size:13px;line-height:1.6;color:rgba(240,236,255,.55);font-style:italic;border-bottom:1px solid var(--bo)}
+.dc-stats{display:flex}
+.dcs{flex:1;padding:13px 10px;text-align:center;border-right:1px solid var(--bo)}
+.dcs:last-child{border-right:none}
+.dcs-v{font-family:var(--fn);font-size:22px;font-weight:700;color:var(--acc)}
+.dcs-l{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--mu);margin-top:3px}
+
+/* STREAK + XP */
+.wid{margin:12px 14px 0;background:var(--s1);border-radius:18px;border:1px solid var(--bo);padding:15px}
+.wid-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+.wid-num{font-family:var(--fn);font-size:36px;font-weight:700;line-height:1;color:var(--acc)}
+.wid-lbl{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mu);margin-top:4px}
+.wid-rec{font-size:12px;color:var(--mu);text-align:right;line-height:1.6}
+.wid-rec b{color:rgba(240,236,255,.35);font-weight:500}
+.days-row{display:flex;gap:5px}
+.dy{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.dd{width:32px;height:32px;border-radius:8px;border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;transition:all .3s}
+.dd.ok{background:var(--acc);border-color:var(--acc);color:#000}
+.dd.td{border-color:rgba(232,255,71,.3);color:rgba(232,255,71,.5);animation:tdp 2.5s infinite}
+.dd.td.ok{background:var(--gn);border-color:var(--gn);color:#000;animation:none}
+@keyframes tdp{0%,100%{box-shadow:0 0 0 0 rgba(232,255,71,0)}50%{box-shadow:0 0 0 4px rgba(232,255,71,.1)}}
+.dy-l{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--mu)}
+.xp-wid{margin:10px 14px 0;background:var(--s1);border-radius:18px;border:1px solid var(--bo);padding:14px 15px}
+.xpw-r{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+.xpw-lv{font-size:13px;font-weight:600}
+.xpw-v{font-size:12px;color:var(--mu)}
+.xp-track{height:3px;background:rgba(255,255,255,.06);border-radius:10px;overflow:hidden;margin-bottom:10px}
+.xp-bar{height:100%;background:linear-gradient(90deg,var(--pu2),var(--pk),var(--acc));border-radius:10px;transition:width .9s cubic-bezier(.16,1,.3,1)}
+.lv-scroll{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+.lc{flex-shrink:0;padding:4px 12px;border-radius:100px;font-size:11px;font-weight:600}
+.lc.got{background:rgba(192,132,252,.12);color:var(--pu);border:1px solid rgba(192,132,252,.2)}
+.lc.cur{background:rgba(232,255,71,.08);color:var(--acc);border:1px dashed rgba(232,255,71,.25)}
+.lc.lck{background:rgba(255,255,255,.03);color:var(--mu);border:1px solid var(--bo)}
+
+/* ── FEED PAGE ── */
+.feed-lock{padding:48px 24px;text-align:center}
+.fl-em{font-size:44px;margin-bottom:14px}
+.fl-t{font-family:var(--fn);font-size:24px;font-weight:700;margin-bottom:8px}
+.fl-s{font-size:14px;color:var(--mu);line-height:1.65;margin-bottom:20px}
+.btn-go-dare{padding:13px 28px;border-radius:100px;border:1.5px solid rgba(232,255,71,.3);background:rgba(232,255,71,.07);color:var(--acc);font-family:var(--fn);font-weight:700;font-size:14px;cursor:pointer}
+/* posts */
+.post{border-bottom:1px solid var(--bo);padding:16px 0 14px}
+.post-hd{display:flex;align-items:center;gap:10px;padding:0 14px 11px}
+.post-av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0}
+.post-n{font-size:14px;font-weight:600}
+.post-t{font-size:11px;color:var(--mu);margin-top:1px}
+.post-priv{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;background:rgba(192,132,252,.1);color:var(--pu);margin-left:6px}
+.post-ch{margin:0 14px 9px;padding:8px 11px;background:var(--s2);border-radius:10px;font-size:12px;color:rgba(240,236,255,.5);line-height:1.4}
+.post-ch b{color:rgba(240,236,255,.75);font-weight:500}
+.post-media{margin:0 14px 9px;border-radius:16px;overflow:hidden;aspect-ratio:4/3;background:var(--s2);position:relative}
+.post-vid{width:100%;height:100%;object-fit:cover;display:block}
+.post-ph-em{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:46px}
+.post-selfie{position:absolute;top:10px;left:10px;width:68px;height:84px;border-radius:10px;border:2.5px solid rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;font-size:24px;background:var(--s3)}
+.post-ai-badge{position:absolute;bottom:9px;right:9px;background:rgba(74,222,128,.92);border-radius:100px;padding:5px 11px;font-size:11px;font-weight:700;color:#000;display:flex;align-items:center;gap:4px}
+.post-cap{padding:0 14px 9px;font-size:14px;line-height:1.65;color:rgba(240,236,255,.65);font-style:italic}
+.post-acts{padding:0 14px;display:flex;gap:7px;align-items:center}
+.pa{padding:7px 13px;border-radius:100px;border:1px solid var(--bo);background:transparent;color:var(--mu);font-size:12px;cursor:pointer;transition:all .2s;font-family:var(--bd);font-weight:500}
+.pa:hover{background:var(--s2);color:var(--tx)}
+.pa.fire{color:var(--or);border-color:rgba(251,146,60,.2);background:rgba(251,146,60,.05)}
+/* ── STAR RATING ON POSTS ── */
+.post-stars{display:flex;gap:3px;padding:3px 0;margin-left:auto}
+.post-star{font-size:18px;cursor:pointer;filter:grayscale(1) brightness(.4);transition:filter .15s,transform .15s;line-height:1;user-select:none}
+.post-star:hover,.post-star.lit{filter:none}
+.post-star.lit{transform:scale(1.1)}
+/* star rating modal */
+.star-modal{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:600;display:none;align-items:flex-end;justify-content:center}
+.star-modal.open{display:flex;animation:fdin .25s}
+.sm-box{background:var(--s1);border-radius:24px 24px 0 0;border:1px solid var(--bo);border-top:2px solid var(--acc);padding:28px 24px calc(var(--safe-bot) + 32px);width:100%;max-width:500px;animation:sup .4s cubic-bezier(.16,1,.3,1)}
+.sm-t{font-family:var(--fn);font-size:22px;font-weight:700;margin-bottom:4px}
+.sm-s{font-size:13px;color:var(--mu);margin-bottom:22px}
+.sm-stars{display:flex;justify-content:center;gap:12px;margin-bottom:18px}
+.sm-star{font-size:36px;cursor:pointer;filter:grayscale(1) brightness(.35);transition:all .15s;user-select:none}
+.sm-star:hover,.sm-star.on{filter:none;transform:scale(1.2)}
+.sm-label{text-align:center;font-family:var(--fn);font-size:18px;font-weight:700;color:var(--acc);min-height:26px;margin-bottom:18px;transition:all .2s}
+.sm-thanks{text-align:center;padding:12px 0;display:none}
+.sm-thanks-em{font-size:44px;margin-bottom:10px}
+.sm-thanks-t{font-family:var(--fn);font-size:20px;font-weight:700;margin-bottom:4px}
+.sm-thanks-s{font-size:13px;color:var(--mu)}
+/* invite */
+.inv-blk{margin:14px;background:var(--s1);border-radius:18px;padding:22px;text-align:center;border:1px dashed rgba(255,255,255,.07)}
+
+/* ── PROFIL PAGE ── */
+.pro-top{display:flex;align-items:center;gap:16px;padding:16px 14px 0;margin-bottom:14px}
+.pro-av-big{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;border:2.5px solid var(--acc);flex-shrink:0;background:var(--s2)}
+.pro-name{font-family:var(--fn);font-size:24px;font-weight:700;letter-spacing:-.3px}
+.pro-since{font-size:12px;color:var(--mu);margin-top:2px}
+.pro-lv{display:inline-flex;align-items:center;gap:5px;margin-top:7px;padding:5px 12px;border-radius:100px;border:1px solid rgba(232,255,71,.2);background:rgba(232,255,71,.06);font-size:12px;font-weight:700;color:var(--acc);cursor:pointer}
+.sg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 14px 14px}
+.sc{background:var(--s1);border-radius:14px;padding:13px;text-align:center;border:1px solid var(--bo)}
+.sc-v{font-family:var(--fn);font-size:24px;font-weight:700;color:var(--acc)}
+.sc-l{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--mu);margin-top:3px}
+
+/* PRIVACY TOGGLE */
+.priv-section{margin:0 14px 14px;background:var(--s1);border-radius:16px;border:1px solid var(--bo);padding:16px}
+.priv-row{display:flex;align-items:center;justify-content:space-between}
+.priv-info .priv-t{font-size:14px;font-weight:600;margin-bottom:3px}
+.priv-info .priv-s{font-size:12px;color:var(--mu);line-height:1.5}
+/* custom toggle */
+.toggle-wrap{display:flex;align-items:center;gap:8px;cursor:pointer}
+.toggle{position:relative;width:48px;height:26px}
+.toggle input{opacity:0;width:0;height:0;position:absolute}
+.toggle-track{position:absolute;inset:0;border-radius:100px;background:var(--s3);border:1px solid var(--bo);transition:all .3s;cursor:pointer}
+.toggle input:checked + .toggle-track{background:rgba(192,132,252,.3);border-color:var(--pu)}
+.toggle-thumb{position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--mu);transition:all .3s}
+.toggle input:checked + .toggle-track + .toggle-thumb{transform:translateX(22px);background:var(--pu)}
+.toggle-lbl{font-size:12px;font-weight:600;color:var(--mu)}
+
+.sec-h{padding:12px 14px 8px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mu)}
+.cats-list{display:flex;flex-direction:column;gap:7px;padding:0 14px}
+.catrow{background:var(--s1);border-radius:12px;padding:12px 13px;border:1px solid var(--bo)}
+.catrow-t{display:flex;justify-content:space-between;font-size:13px;margin-bottom:7px}
+.cat-bar{height:3px;background:rgba(255,255,255,.06);border-radius:10px;overflow:hidden}
+.cat-fill{height:100%;border-radius:10px;transition:width 1s cubic-bezier(.16,1,.3,1)}
+.bdgs-list{display:flex;flex-wrap:wrap;gap:8px;padding:0 14px}
+.bdg{background:var(--s1);border-radius:12px;padding:11px 12px;border:1px solid var(--bo);display:flex;align-items:center;gap:9px}
+.bdg-e{font-size:21px}
+.bdg-n{font-size:13px;font-weight:600}
+.bdg-d{font-size:11px;color:var(--mu)}
+.settings-section{margin:10px 14px 0;display:flex;flex-direction:column;gap:8px}
+.set-btn{width:100%;padding:13px 16px;border-radius:100px;border:1px solid var(--bo);background:var(--s1);color:rgba(240,236,255,.5);font-family:var(--fn);font-weight:600;font-size:13px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:10px;transition:all .2s}
+.set-btn:hover{background:var(--s2);color:var(--tx)}
+.set-btn.danger{border-color:rgba(248,113,113,.2);color:var(--rd);background:rgba(248,113,113,.04)}
+/* profile avatar upload */
+.pro-av-wrap{position:relative;width:72px;height:72px;cursor:pointer;flex-shrink:0}
+.pro-av-big{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;border:2.5px solid var(--acc);background:var(--s2)}
+.pro-av-img{width:72px;height:72px;border-radius:50%;object-fit:cover;border:2.5px solid var(--acc);position:absolute;inset:0}
+.pro-av-edit{position:absolute;bottom:0;right:0;width:22px;height:22px;border-radius:50%;background:var(--acc);color:#000;font-size:10px;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg)}
+.pro-bio{font-size:13px;color:rgba(240,236,255,.4);margin:3px 0 2px;font-style:italic;line-height:1.4;cursor:pointer}
+.pro-bio:hover{color:rgba(240,236,255,.6)}
+.pro-quick-row{display:flex;gap:8px;margin:12px 14px 0}
+.pro-quick-btn{flex:1;padding:10px 12px;border-radius:100px;border:1px solid var(--bo);background:var(--s1);color:rgba(240,236,255,.6);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;font-family:var(--fn)}
+.pro-quick-btn:hover{background:var(--s2);color:var(--tx)}
+/* edit profile modal avatar */
+.edit-av-wrap{position:relative;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px}
+.edit-av-btn{font-size:12px;color:var(--acc);font-weight:600;background:rgba(232,255,71,.07);padding:5px 14px;border-radius:100px;border:1px solid rgba(232,255,71,.2)}
+/* language modal */
+.lang-opt{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--s1);border-radius:14px;border:1px solid var(--bo);cursor:pointer;transition:all .2s}
+.lang-opt:hover{border-color:rgba(255,255,255,.15);background:var(--s2)}
+.lang-flag{font-size:24px;flex-shrink:0}
+.lang-name{font-size:14px;font-weight:600}
+.lang-sub{font-size:11px;color:var(--mu);margin-top:1px}
+.lang-check{margin-left:auto;color:var(--acc);font-size:16px;font-weight:700}
+
+/* ── NOTIF TOAST ── */
+.nt{position:fixed;top:-110px;left:50%;transform:translateX(-50%);background:var(--s2);border:1px solid rgba(232,255,71,.2);border-radius:18px;padding:13px 16px;display:flex;align-items:flex-start;gap:12px;transition:top .5s cubic-bezier(.16,1,.3,1);z-index:9999;min-width:280px;max-width:360px;box-shadow:0 24px 60px rgba(0,0,0,.7)}
+.nt.show{top:calc(var(--safe-top) + 14px)}
+.nt-em{font-size:24px;flex-shrink:0}
+.nt-t{font-size:14px;font-weight:700;margin-bottom:2px}
+.nt-s{font-size:12px;color:rgba(240,236,255,.4);line-height:1.4}
+.nt-x{margin-left:auto;color:var(--mu);cursor:pointer;padding-left:8px;font-size:16px;flex-shrink:0;padding-top:2px}
+
+/* ── INTENSITY MODAL ── */
+.mo-ov{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;display:none;align-items:flex-end;justify-content:center}
+.mo-ov.open{display:flex;animation:fdin .25s}
+@keyframes fdin{from{opacity:0}to{opacity:1}}
+.mo-box{background:var(--s1);border-radius:24px 24px 0 0;border:1px solid var(--bo);border-top:2px solid var(--acc);padding:26px 20px calc(var(--safe-bot) + 36px);width:100%;max-width:500px;animation:sup .4s cubic-bezier(.16,1,.3,1)}
+@keyframes sup{from{transform:translateY(100%)}to{transform:none}}
+.mo-t{font-family:var(--fn);font-size:24px;font-weight:700;margin-bottom:4px}
+.mo-s{font-size:13px;color:var(--mu);margin-bottom:18px}
+
+/* TOAST */
+.toast{position:fixed;bottom:calc(var(--safe-bot) + 88px);left:50%;transform:translateX(-50%) translateY(10px);background:var(--s3);border:1px solid var(--bo);border-radius:100px;padding:11px 20px;font-size:13px;font-weight:600;opacity:0;transition:all .35s;pointer-events:none;white-space:nowrap;z-index:999;max-width:320px;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* color helpers */
+.c-pu{color:var(--pu)}.c-bl{color:var(--bl)}.c-gn{color:var(--gn)}.c-or{color:var(--or)}.c-pk{color:var(--pk)}.c-rd{color:var(--rd)}
+</style>
+</head>
+<body>
+<div id="root">
+
+<!-- SPLASH -->
+<div class="scr" id="splash">
+  <div class="sp-bg"><div class="sp-mesh"></div><div class="sp-grid"></div></div>
+  <div class="sp-inner">
+    <div class="sp-logo-wrap">
+      <div class="sp-logo">dare<span class="sp-dot"></span></div>
+      <div class="sp-logo-glow"></div>
+    </div>
+    <div class="sp-tag">Développement personnel · pour de vrai</div>
+    <div class="sp-bar"><div class="sp-fill"></div></div>
+  </div>
+</div>
+
+<!-- ONBOARDING -->
+<div class="scr off" id="onboard">
+  <div class="ob-wrap" id="ob-wrap">
+    <div class="ob-sl">
+      <div class="ob-slide-num">01</div>
+      <div class="ob-icon-wrap oi-1">⚡</div>
+      <div class="ob-title">Un défi par jour,<br><span class="hl">à l'improviste</span></div>
+      <div class="ob-body">La notif tombe sans prévenir. Tu as 4h. Pas "ce soir". Pas "demain". Maintenant. Sport, lecture, méditation, courage. Adapté à toi.</div>
+      <div class="ob-phone-preview">
+        <div class="ob-mini-phone">
+          <div class="omp-content">
+            <div class="omp-bar"><span class="omp-logo">dare.</span><span class="omp-sk">🔥 5</span></div>
+            <div class="omp-card"><div class="omp-em">📖</div><div class="omp-label">Lis 20 pages</div><div class="omp-badge">⚡ Nouveau</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ob-sl">
+      <div class="ob-slide-num">02</div>
+      <div class="ob-icon-wrap oi-2">🎥</div>
+      <div class="ob-title">Vidéo obligatoire.<br><span class="hl" style="background:linear-gradient(135deg,var(--gn),var(--bl));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">L'IA vérifie.</span></div>
+      <div class="ob-body">Filme-toi pendant que tu le fais. 10 secondes minimum. L'IA vérifie que c'est réel. Pas une vidéo d'avant. Pas un screenshot. Toi, là, maintenant.</div>
+      <div class="ob-phone-preview">
+        <div class="ob-mini-phone">
+          <div class="omp-content">
+            <div class="omp-bar"><span class="omp-logo">dare.</span><span style="font-size:9px;color:var(--rd)">● 0:08</span></div>
+            <div class="omp-card" style="background:#0a0a0f">
+              <div style="font-size:32px">🏃</div>
+              <div class="omp-badge">✓ IA validé</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ob-sl">
+      <div class="ob-slide-num">03</div>
+      <div class="ob-icon-wrap oi-3">🏆</div>
+      <div class="ob-title">Tes amis te voient<br><span class="hl" style="background:linear-gradient(135deg,var(--or),var(--pk));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">pour de vrai.</span></div>
+      <div class="ob-body">Tu accèdes au feed seulement après avoir posté ta preuve. Streaks. XP. Badges. Compte privé ou public. Et personne peut tricher.</div>
+      <div class="ob-phone-preview">
+        <div class="ob-mini-phone">
+          <div class="omp-content">
+            <div class="omp-bar"><span class="omp-logo">dare.</span><span class="omp-sk">🔥 12</span></div>
+            <div class="omp-card" style="background:#0a0a0f;gap:2px">
+              <div style="font-size:24px;font-family:var(--fn);font-weight:700;color:var(--acc)">12</div>
+              <div class="omp-label">jours de suite</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ob-foot">
+    <div class="ob-pips" id="pips"><div class="pip on"></div><div class="pip"></div><div class="pip"></div></div>
+    <button class="btn-ob" id="ob-btn" onclick="obNext()">Suivant →</button>
+    <button class="skip-ob" onclick="goInt()">Passer l'intro</button>
+  </div>
+</div>
+
+<!-- INTENSITY -->
+<div class="scr off" id="intensity">
+  <div class="int-kicker">Étape 1 / 2</div>
+  <div class="int-h">C'est quoi<br>ton niveau honnête ?</div>
+  <div class="int-sub">Sois honnête avec toi-même — pas avec nous. Les défis s'adaptent. Et tu peux changer quand tu veux depuis ton profil.</div>
+  <div class="lv-list">
+    <div class="lv" data-lv="1" onclick="pickLv(this)">
+      <div class="lv-in">
+        <div class="lv-row1"><div class="lv-em lv-em-1">🌱</div><div class="lv-right"><div class="lv-diff df-ez">Facile</div><div class="lv-check" id="lc1"></div></div></div>
+        <div class="lv-name">Je commence tranquille</div>
+        <div class="lv-desc">Créer l'habitude sans pression. Des défis courts. L'essentiel c'est de le faire chaque jour — même le mercredi où t'as pas envie.</div>
+        <div class="lv-tags"><div class="lv-tag">📖 Lis 10 pages</div><div class="lv-tag">🧘 5 min de calme</div><div class="lv-tag">🚶 Marche 10 min</div><div class="lv-tag">✍️ Journal 3 min</div></div>
+      </div>
+    </div>
+    <div class="lv" data-lv="2" onclick="pickLv(this)">
+      <div class="lv-in">
+        <div class="lv-row1"><div class="lv-em lv-em-2">🔥</div><div class="lv-right"><div class="lv-diff df-md">Challenge</div><div class="lv-check" id="lc2"></div></div></div>
+        <div class="lv-name">Je veux me challenger</div>
+        <div class="lv-desc">Tu sors de ta zone de confort. Ça fait un peu mal. C'est voulu. Tu vas vraiment progresser.</div>
+        <div class="lv-tags"><div class="lv-tag">🏃 Course 15 min</div><div class="lv-tag">📖 Lis 30 pages</div><div class="lv-tag">💬 Parle à un inconnu</div><div class="lv-tag">🎨 Crée quelque chose</div></div>
+      </div>
+    </div>
+    <div class="lv" data-lv="3" onclick="pickLv(this)">
+      <div class="lv-in">
+        <div class="lv-row1"><div class="lv-em lv-em-3">💀</div><div class="lv-right"><div class="lv-diff df-hd">Extrême</div><div class="lv-check" id="lc3"></div></div></div>
+        <div class="lv-name">Je suis chaud !</div>
+        <div class="lv-desc">Intense. Inconfortable. Parfois humiliant. Tu vas te dépasser pour de vrai. Vraiment pas pour tout le monde.</div>
+        <div class="lv-tags"><div class="lv-tag">💪 100 burpees</div><div class="lv-tag">🌅 Lever avant 5h30</div><div class="lv-tag">🎤 Chante en public</div><div class="lv-tag">📵 Sans téléphone 8h</div></div>
+      </div>
+    </div>
+  </div>
+  <button class="btn-cont" id="btn-cont" disabled onclick="goAuth()">Continuer →</button>
+</div>
+
+<!-- AUTH -->
+<div class="scr off" id="auth">
+  <div class="auth-logo">dare<em>.</em></div>
+  <div class="auth-sub">Rejoins les gens qui progressent pour de vrai — pas ceux qui en parlent.</div>
+  <div class="a-tabs"><button class="a-tab on" id="at-l" onclick="swAuth('login')">Connexion</button><button class="a-tab" id="at-s" onclick="swAuth('signup')">Créer un compte</button></div>
+  <div id="af">
+    <div class="fld" id="f-un" style="display:none"><label>Pseudo</label><input type="text" id="inp-un" placeholder="ex: alex_dare"></div>
+    <div id="f-av" style="display:none;margin-bottom:14px">
+      <div style="font-size:10px;font-weight:700;color:var(--mu);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">Avatar</div>
+      <div class="av-g">
+        <div class="av-i on" onclick="pickAv(this)">🦊</div><div class="av-i" onclick="pickAv(this)">🐺</div>
+        <div class="av-i" onclick="pickAv(this)">🦁</div><div class="av-i" onclick="pickAv(this)">🐉</div>
+        <div class="av-i" onclick="pickAv(this)">⚡</div><div class="av-i" onclick="pickAv(this)">🧘</div>
+        <div class="av-i" onclick="pickAv(this)">📖</div><div class="av-i" onclick="pickAv(this)">🔥</div>
+      </div>
+    </div>
+    <div class="fld"><label>Email</label><input type="email" id="inp-em" placeholder="toi@mail.com" value="alex@example.com"></div>
+    <div class="fld"><label>Mot de passe</label><input type="password" id="inp-pw" placeholder="••••••••" value="password"></div>
+  </div>
+  <button class="btn-auth" id="auth-btn" onclick="doAuth()">Se connecter</button>
+  <div class="a-or">— ou —</div>
+  <button class="btn-goog" onclick="doAuth()">
+    <svg width="17" height="17" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+    Continuer avec Google
+  </button>
+</div>
+
+<!-- APP -->
+<div class="scr off" id="app">
+  <div class="topbar">
+    <div class="tb-logo">dare<em>.</em></div>
+    <div class="tb-center"><div class="tb-day">Aujourd'hui</div><div class="tb-timer" id="tb-timer">4:00:00</div></div>
+    <div class="tb-r"><div class="tb-sk">🔥 <span id="top-sk">0</span></div><div class="tb-av" id="top-av" onclick="goPage('profil')">🦊</div></div>
+  </div>
+
+  <div class="pages">
+    <!-- ── DÉFI ── -->
+    <div class="page on" id="page-defi">
+      <div class="ch-card" id="ch-card">
+        <div class="ch-hd">
+          <div class="ch-meta">
+            <div class="ch-kicker" id="ch-kicker">Défi du jour · 🔥 Challenge</div>
+            <div class="ch-title" id="ch-title">Lis 30 pages sans interruption</div>
+          </div>
+          <div class="ch-right">
+            <div class="timer-pill"><div class="tp-dot"></div><div class="tp-val" id="tp-val">4:00:00</div></div>
+            <div class="xp-pill">⚡ <span id="ch-xp">+20</span> XP</div>
+          </div>
+        </div>
+
+        <!-- VIDEO ZONE -->
+        <div class="vid-zone" id="vid-zone">
+          <div class="vz-empty" id="vz-empty" onclick="startRecording()">
+            <div class="vz-cam">🎥</div>
+            <div class="vz-title">Filme ton défi — 10s minimum</div>
+            <div class="vz-sub">Toi, là, maintenant. Pas une vidéo d'avant. L'IA regarde.</div>
+          </div>
+          <!-- Recording state -->
+          <div class="vz-recording" id="vz-recording">
+            <div class="vz-viewfinder" id="vz-viewfinder">
+              <video id="live-video" autoplay muted playsinline style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0"></video>
+              <div class="rec-indicator"><div class="rec-dot"></div><div class="rec-time" id="rec-time">0:00</div></div>
+            </div>
+            <div class="vz-record-btn-wrap">
+              <div class="vz-rec-btn" id="rec-btn" onclick="stopRecording()"></div>
+            </div>
+          </div>
+          <!-- Preview after record -->
+          <div class="vz-preview" id="vz-preview">
+            <video id="preview-vid" playsinline loop autoplay muted style="width:100%;height:100%;object-fit:cover;display:block"></video>
+          </div>
+          <!-- selfie overlay -->
+          <div class="vz-selfie-overlay" id="vz-selfie" onclick="triggerSelfie()">
+            <input type="file" accept="image/*" id="self-input" style="display:none" onchange="onSelfie(event)">
+            <img id="selfie-img" class="vz-selfie-img" src="" alt="">
+            <span id="selfie-em">🤳</span>
+          </div>
+          <button class="vz-retake" id="retake-btn" onclick="retakeVideo()">↺ Refaire</button>
+          <div class="vz-checking" id="vz-checking" style="display:none"><div class="spin"></div>IA analyse…</div>
+          <div class="vz-ok" id="vz-ok" style="display:none">✓ Défi détecté</div>
+          <div class="vz-fail" id="vz-fail" style="display:none">✗ Pas le bon défi</div>
+        </div>
+
+        <div class="ai-msg" id="ai-msg"></div>
+
+        <div class="desc-wrap">
+          <div class="desc-top"><div class="desc-lbl">Ce que tu as fait</div><div class="desc-cnt" id="desc-cnt">0 / 280</div></div>
+          <textarea class="desc-ta" id="desc-ta" placeholder="Ex: Lu 34 pages du livre 'Atomic Habits'. Le chapitre sur les habitudes identitaires m'a vraiment parlé." oninput="onDesc()" maxlength="280" rows="3"></textarea>
+        </div>
+
+        <div class="val-strip">
+          <div class="vs-list">
+            <div class="vi" id="vi1"><div class="vi-dot"></div>Vidéo</div>
+            <div class="vi" id="vi2"><div class="vi-dot"></div>IA ✓</div>
+            <div class="vi" id="vi3"><div class="vi-dot"></div>Selfie</div>
+            <div class="vi" id="vi4"><div class="vi-dot"></div>Description</div>
+          </div>
+          <div class="vs-pct" id="vs-pct">0%</div>
+        </div>
+
+        <div class="sub-wrap">
+          <button class="btn-sub" id="btn-sub" disabled onclick="submitDare()">Valider mon défi</button>
+        </div>
+        <div class="anti-cheat-note"><span>🔒</span>Vidéo vraie + selfie + description. Pas de triche possible.</div>
+        <div style="height:14px"></div>
+      </div>
+
+      <div class="done-card" id="done-card">
+        <div class="dc-top"><div class="dc-chk">✓</div><div><div class="dc-title">Défi validé !</div><div class="dc-sub">Preuve acceptée · Partagé avec tes amis</div></div></div>
+        <div class="dc-media">
+          <div class="dc-media-ph" id="dc-ph">🎥</div>
+          <video id="dc-vid" class="dc-vid" playsinline loop autoplay muted></video>
+          <img id="dc-selfie" class="dc-selfie" src="" alt="">
+        </div>
+        <div class="dc-caption" id="dc-cap"></div>
+        <div class="dc-stats">
+          <div class="dcs"><div class="dcs-v" id="dcs-xp">+20</div><div class="dcs-l">XP gagnés</div></div>
+          <div class="dcs"><div class="dcs-v" id="dcs-sk">1</div><div class="dcs-l">Streak 🔥</div></div>
+          <div class="dcs"><div class="dcs-v" id="dcs-tot">1</div><div class="dcs-l">Total défis</div></div>
+        </div>
+      </div>
+
+      <div class="wid">
+        <div class="wid-top"><div><div class="wid-num" id="sk-n">0</div><div class="wid-lbl">Jours de suite</div></div><div class="wid-rec">Record perso<br><b id="rec-n">0 jours</b></div></div>
+        <div class="days-row">
+          <div class="dy"><div class="dd" id="d0"></div><div class="dy-l">L</div></div>
+          <div class="dy"><div class="dd" id="d1"></div><div class="dy-l">M</div></div>
+          <div class="dy"><div class="dd" id="d2"></div><div class="dy-l">M</div></div>
+          <div class="dy"><div class="dd" id="d3"></div><div class="dy-l">J</div></div>
+          <div class="dy"><div class="dd" id="d4"></div><div class="dy-l">V</div></div>
+          <div class="dy"><div class="dd" id="d5"></div><div class="dy-l">S</div></div>
+          <div class="dy"><div class="dd td" id="d6"></div><div class="dy-l">D</div></div>
+        </div>
+      </div>
+      <div class="xp-wid">
+        <div class="xpw-r"><div class="xpw-lv" id="xpw-lv">Niveau 1 — Rookie</div><div class="xpw-v" id="xpw-v">0 / 100 XP</div></div>
+        <div class="xp-track"><div class="xp-bar" id="xp-bar" style="width:0%"></div></div>
+        <div class="lv-scroll" id="lv-scroll"></div>
+      </div>
+      <div style="height:10px"></div>
+    </div>
+
+    <!-- ── FEED ── -->
+    <div class="page" id="page-feed">
+      <div id="feed-lock-view" style="display:none">
+        <div class="feed-lock">
+          <div class="fl-em">🔒</div>
+          <div class="fl-t">Poste ta preuve d'abord</div>
+          <div class="fl-s">Tu vois les preuves de tes amis seulement après avoir partagé la tienne. Comme BeReal — mais pour les choses qui comptent vraiment.</div>
+          <button class="btn-go-dare" onclick="goPage('defi')">Aller poster ma preuve →</button>
+        </div>
+      </div>
+      <div id="feed-open-view">
+        <div id="feed-list"></div>
+        <div class="inv-blk">
+          <div style="font-size:28px;margin-bottom:8px">👥</div>
+          <div style="font-size:14px;font-weight:600;margin-bottom:5px">Invite tes amis</div>
+          <div style="font-size:13px;color:var(--mu);margin-bottom:14px;line-height:1.6">Vois leurs preuves quotidiennes et progressez ensemble.</div>
+          <button style="padding:9px 22px;border-radius:100px;border:1px solid var(--bo);background:transparent;color:rgba(240,236,255,.6);font-family:var(--fn);font-weight:600;font-size:13px;cursor:pointer" onclick="showToast(t('toast_copied'))">Inviter des amis</button>
+        </div>
+        <div style="height:12px"></div>
+      </div>
+    </div>
+
+    <!-- ── PROFIL ── -->
+    <div class="page" id="page-profil">
+
+      <!-- HEADER PROFIL -->
+      <div class="pro-top">
+        <div class="pro-av-wrap" onclick="triggerAvatarChange()">
+          <div class="pro-av-big" id="pro-av">🦊</div>
+          <img id="pro-av-img" class="pro-av-img" src="" alt="">
+          <div class="pro-av-edit">📷</div>
+          <input type="file" id="av-file-input" accept="image/*" style="display:none" onchange="onAvatarFile(event)">
+        </div>
+        <div style="flex:1">
+          <div class="pro-name" id="pro-name">Joueur</div>
+          <div class="pro-bio" id="pro-bio-display">Tap pour ajouter une bio…</div>
+          <div class="pro-since" id="pro-since">Membre depuis aujourd'hui</div>
+          <div class="pro-lv" id="pro-lv" onclick="openMo()">🔥 Challenge — Changer →</div>
+        </div>
+      </div>
+
+      <!-- ACTIONS RAPIDES -->
+      <div class="pro-quick-row">
+        <button class="pro-quick-btn" onclick="openEditProfile()">✏️ Modifier le profil</button>
+        <button class="pro-quick-btn" onclick="openLangModal()">🌍 Langue</button>
+      </div>
+
+      <!-- PRIVACY TOGGLE -->
+      <div class="priv-section">
+        <div class="priv-row">
+          <div class="priv-info">
+            <div class="priv-t" id="priv-title">Compte public</div>
+            <div class="priv-s" id="priv-s">Tes défis sont visibles par tout le monde</div>
+          </div>
+          <label class="toggle-wrap">
+            <div class="toggle">
+              <input type="checkbox" id="priv-toggle" onchange="togglePrivacy()">
+              <div class="toggle-track"></div>
+              <div class="toggle-thumb"></div>
+            </div>
+            <span class="toggle-lbl" id="priv-lbl">Public</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- STATS -->
+      <div class="sg">
+        <div class="sc"><div class="sc-v" id="p-tot">0</div><div class="sc-l">Défis</div></div>
+        <div class="sc"><div class="sc-v" id="p-sk">0</div><div class="sc-l">Streak 🔥</div></div>
+        <div class="sc"><div class="sc-v" id="p-xp">0</div><div class="sc-l">XP</div></div>
+      </div>
+
+      <!-- CATÉGORIES -->
+      <div class="sec-h">Catégories</div>
+      <div class="cats-list">
+        <div class="catrow"><div class="catrow-t"><span>📖 Lecture</span><span class="c-bl" id="c-rd">0 défis</span></div><div class="cat-bar"><div class="cat-fill" id="f-rd" style="width:0%;background:linear-gradient(90deg,var(--bl),var(--pu))"></div></div></div>
+        <div class="catrow"><div class="catrow-t"><span>🧘 Mindfulness</span><span class="c-gn" id="c-mi">0 défis</span></div><div class="cat-bar"><div class="cat-fill" id="f-mi" style="width:0%;background:linear-gradient(90deg,var(--gn),var(--bl))"></div></div></div>
+        <div class="catrow"><div class="catrow-t"><span>🏃 Sport</span><span class="c-or" id="c-sp">0 défis</span></div><div class="cat-bar"><div class="cat-fill" id="f-sp" style="width:0%;background:linear-gradient(90deg,var(--or),var(--pk))"></div></div></div>
+        <div class="catrow"><div class="catrow-t"><span>💬 Courage</span><span class="c-pk" id="c-co">0 défis</span></div><div class="cat-bar"><div class="cat-fill" id="f-co" style="width:0%;background:linear-gradient(90deg,var(--pk),var(--pu))"></div></div></div>
+        <div class="catrow"><div class="catrow-t"><span>🎨 Créativité</span><span class="c-pu" id="c-cr">0 défis</span></div><div class="cat-bar"><div class="cat-fill" id="f-cr" style="width:0%;background:linear-gradient(90deg,var(--pu),var(--bl))"></div></div></div>
+      </div>
+
+      <!-- BADGES -->
+      <div class="sec-h">Badges</div>
+      <div class="bdgs-list" id="bdg-list">
+        <div class="bdg" style="opacity:.2"><div class="bdg-e">🔥</div><div><div class="bdg-n">En feu</div><div class="bdg-d">7 jours streak</div></div></div>
+        <div class="bdg" style="opacity:.2"><div class="bdg-e">📖</div><div><div class="bdg-n">Lecteur</div><div class="bdg-d">10 défis lecture</div></div></div>
+        <div class="bdg" style="opacity:.2"><div class="bdg-e">🏃</div><div><div class="bdg-n">Runner</div><div class="bdg-d">10 défis sport</div></div></div>
+        <div class="bdg" style="opacity:.2"><div class="bdg-e">🎥</div><div><div class="bdg-n">No Cheat</div><div class="bdg-d">5 vidéos validées</div></div></div>
+      </div>
+
+      <!-- PARAMÈTRES -->
+      <div class="settings-section">
+        <button class="set-btn" onclick="openEditProfile()">✏️ Modifier mon profil</button>
+        <button class="set-btn" onclick="openMo()">⚡ Changer d'intensité</button>
+        <button class="set-btn" onclick="openLangModal()">🌍 Changer de langue</button>
+        <button class="set-btn" onclick="showToast(t('toast_notif'))">🔔 Notifications push</button>
+        <button class="set-btn danger" onclick="doLogout()">Se déconnecter</button>
+      </div>
+      <div style="height:20px"></div>
+    </div>
+  </div>
+
+  <div class="bnav">
+    <button class="bn on" id="bn-defi" onclick="goPage('defi')">
+      <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Défi
+    </button>
+    <button class="bn" id="bn-feed" onclick="goPage('feed')">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Amis
+    </button>
+    <button class="bn" id="bn-profil" onclick="goPage('profil')">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profil
+    </button>
+  </div>
+</div>
+
+<!-- INTENSITY MODAL -->
+<div class="mo-ov" id="mo-ov" onclick="closeMo(event)">
+  <div class="mo-box">
+    <div class="mo-t">Changer d'intensité</div>
+    <div class="mo-s">Le prochain défi s'adapte immédiatement.</div>
+    <div id="mo-cards">
+      <div class="lv" data-lv="1" onclick="moLv(this)" style="margin-bottom:8px"><div class="lv-in"><div class="lv-row1"><div class="lv-em lv-em-1">🌱</div><div class="lv-right"><div class="lv-diff df-ez">Facile</div><div class="lv-check"></div></div></div><div class="lv-name">Je commence tranquille</div></div></div>
+      <div class="lv" data-lv="2" onclick="moLv(this)" style="margin-bottom:8px"><div class="lv-in"><div class="lv-row1"><div class="lv-em lv-em-2">🔥</div><div class="lv-right"><div class="lv-diff df-md">Challenge</div><div class="lv-check"></div></div></div><div class="lv-name">Je veux me challenger</div></div></div>
+      <div class="lv" data-lv="3" onclick="moLv(this)" style="margin-bottom:14px"><div class="lv-in"><div class="lv-row1"><div class="lv-em lv-em-3">💀</div><div class="lv-right"><div class="lv-diff df-hd">Extrême</div><div class="lv-check"></div></div></div><div class="lv-name">Je suis chaud !</div></div></div>
+    </div>
+    <button class="btn-cont" id="mo-save" onclick="saveMo()" disabled>Enregistrer</button>
+  </div>
+</div>
+
+<!-- STAR RATING MODAL -->
+<div class="star-modal" id="star-modal" onclick="closeStarModal(event)">
+  <div class="sm-box">
+    <div id="sm-form">
+      <div class="sm-t" id="sm-t">Note ce défi</div>
+      <div class="sm-s" id="sm-s">Était-ce un bon défi pour progresser ?</div>
+      <div class="sm-stars" id="sm-stars">
+        <span class="sm-star" data-v="1">⭐</span>
+        <span class="sm-star" data-v="2">⭐</span>
+        <span class="sm-star" data-v="3">⭐</span>
+        <span class="sm-star" data-v="4">⭐</span>
+        <span class="sm-star" data-v="5">⭐</span>
+      </div>
+      <div class="sm-label" id="sm-label"></div>
+    </div>
+    <div class="sm-thanks" id="sm-thanks">
+      <div class="sm-thanks-em">✨</div>
+      <div class="sm-thanks-t">Merci !</div>
+      <div class="sm-thanks-s">Ta note aide à améliorer les défis.</div>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT PROFILE MODAL -->
+<div class="mo-ov" id="edit-profile-modal" onclick="closeEditProfile(event)">
+  <div class="mo-box" style="max-height:85vh;overflow-y:auto">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <div class="mo-t">Mon profil</div>
+      <button onclick="document.getElementById('edit-profile-modal').classList.remove('open')" style="width:28px;height:28px;border-radius:50%;background:var(--s3);border:none;color:var(--mu);cursor:pointer;font-size:13px">✕</button>
+    </div>
+
+    <!-- Avatar -->
+    <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:22px">
+      <div class="edit-av-wrap" onclick="triggerAvatarChange()">
+        <div class="pro-av-big" id="edit-av-emoji" style="width:80px;height:80px;font-size:36px">🦊</div>
+        <img id="edit-av-img" src="" alt="" style="display:none;width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid rgba(232,255,71,.3)">
+        <div class="edit-av-btn">📷 Changer</div>
+      </div>
+      <div style="font-size:11px;color:var(--mu);margin-top:8px">Ou choisis un emoji</div>
+      <div class="av-g" style="margin-top:8px;justify-content:center">
+        <div class="av-i" onclick="pickAv(this)">🦊</div><div class="av-i" onclick="pickAv(this)">🐺</div>
+        <div class="av-i" onclick="pickAv(this)">🦁</div><div class="av-i" onclick="pickAv(this)">🐉</div>
+        <div class="av-i" onclick="pickAv(this)">⚡</div><div class="av-i" onclick="pickAv(this)">🧘</div>
+        <div class="av-i" onclick="pickAv(this)">📖</div><div class="av-i" onclick="pickAv(this)">🔥</div>
+        <div class="av-i" onclick="pickAv(this)">🎯</div><div class="av-i" onclick="pickAv(this)">💪</div>
+      </div>
+    </div>
+
+    <!-- Pseudo -->
+    <div class="fld" style="margin-bottom:13px">
+      <label style="display:block;font-size:10px;font-weight:700;color:var(--mu);letter-spacing:.1em;text-transform:uppercase;margin-bottom:7px">Pseudo</label>
+      <input type="text" id="edit-name" maxlength="24" placeholder="Ton pseudo" style="width:100%;padding:13px 14px;background:var(--s1);border:1.5px solid var(--bo);border-radius:12px;color:var(--tx);font-family:var(--bd);font-size:15px;outline:none;transition:border .2s">
+    </div>
+
+    <!-- Bio -->
+    <div class="fld" style="margin-bottom:20px">
+      <label style="display:block;font-size:10px;font-weight:700;color:var(--mu);letter-spacing:.1em;text-transform:uppercase;margin-bottom:7px">Bio <span style="font-weight:400;text-transform:none;letter-spacing:0">(optionnelle)</span></label>
+      <textarea id="edit-bio" maxlength="120" rows="3" placeholder="Dis en une phrase pourquoi tu utilises dare." style="width:100%;padding:13px 14px;background:var(--s1);border:1.5px solid var(--bo);border-radius:12px;color:var(--tx);font-family:var(--bd);font-size:14px;outline:none;resize:none;line-height:1.6;transition:border .2s"></textarea>
+      <div id="bio-count" style="font-size:11px;color:var(--mu);text-align:right;margin-top:4px">0 / 120</div>
+    </div>
+
+    <button onclick="saveEditProfile()" style="width:100%;padding:16px;border-radius:100px;background:var(--acc);color:#000;font-family:var(--fn);font-weight:700;font-size:15px;border:none;cursor:pointer">Sauvegarder</button>
+  </div>
+</div>
+
+<!-- LANGUAGE MODAL -->
+<div class="mo-ov" id="lang-modal" onclick="closeLangModal(event)">
+  <div class="mo-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <div class="mo-t">Langue / Language</div>
+      <button onclick="document.getElementById('lang-modal').classList.remove('open')" style="width:28px;height:28px;border-radius:50%;background:var(--s3);border:none;color:var(--mu);cursor:pointer;font-size:13px">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div class="lang-opt" data-lang="fr" onclick="setLang('fr')"><span class="lang-flag">🇫🇷</span><div><div class="lang-name">Français</div><div class="lang-sub">Langue par défaut</div></div><span class="lang-check" id="lc-fr">✓</span></div>
+      <div class="lang-opt" data-lang="en" onclick="setLang('en')"><span class="lang-flag">🇬🇧</span><div><div class="lang-name">English</div><div class="lang-sub">Coming soon</div></div><span class="lang-check" id="lc-en" style="display:none">✓</span></div>
+      <div class="lang-opt" data-lang="es" onclick="setLang('es')"><span class="lang-flag">🇪🇸</span><div><div class="lang-name">Español</div><div class="lang-sub">Próximamente</div></div><span class="lang-check" id="lc-es" style="display:none">✓</span></div>
+      <div class="lang-opt" data-lang="de" onclick="setLang('de')"><span class="lang-flag">🇩🇪</span><div><div class="lang-name">Deutsch</div><div class="lang-sub">Demnächst</div></div><span class="lang-check" id="lc-de" style="display:none">✓</span></div>
+      <div class="lang-opt" data-lang="pt" onclick="setLang('pt')"><span class="lang-flag">🇧🇷</span><div><div class="lang-name">Português</div><div class="lang-sub">Em breve</div></div><span class="lang-check" id="lc-pt" style="display:none">✓</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- NOTIF -->
+<div class="nt" id="nt">
+  <div class="nt-em" id="nt-em">⚡</div>
+  <div><div class="nt-t" id="nt-t">Défi reçu !</div><div class="nt-s" id="nt-s">Vidéo obligatoire. L'IA vérifie.</div></div>
+  <div class="nt-x" onclick="closeNt()">✕</div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// Fichier de traductions — intégré inline dans app.html
+const TRANSLATIONS = {
+  fr: {
+    // Navigation
+    nav_defi: 'Défi', nav_amis: 'Amis', nav_profil: 'Profil',
+    // Onboarding
+    ob_next: 'Suivant →', ob_skip: "Passer l'intro",
+    ob1_title: "Un défi par jour,", ob1_hl: "à l'improviste",
+    ob1_body: "La notif tombe sans prévenir. T'as 4h. Pas 'ce soir'. Pas 'demain'. Maintenant. Sport, lecture, méditation, courage. Adapté à toi.",
+    ob2_title: "Vidéo obligatoire.", ob2_hl: "L'IA vérifie.",
+    ob2_body: "Filme-toi pendant que tu le fais. 10 secondes minimum. L'IA regarde. Pas une vidéo de la semaine dernière. Toi, là, maintenant.",
+    ob3_title: "Tes amis te voient", ob3_hl: "pour de vrai.",
+    ob3_body: "T'accèdes au feed seulement après avoir posté ta preuve. Streaks. XP. Badges. Personne peut tricher.",
+    // Intensity
+    int_step: 'Étape 1 / 2', int_h: "C'est quoi ton niveau honnête ?",
+    int_sub: "Sois honnête avec toi-même — pas avec nous. Tu peux changer quand tu veux.",
+    int_continue: 'Continuer →',
+    lv1_name: 'Je commence tranquille',
+    lv1_desc: "Créer l'habitude sans pression. Des défis courts. L'essentiel c'est de le faire chaque jour — même le mercredi où t'as pas envie.",
+    lv2_name: 'Je veux me challenger',
+    lv2_desc: "Tu sors de ta zone. Ça fait un peu mal. C'est voulu. Tu vas vraiment progresser.",
+    lv3_name: 'Je suis chaud !',
+    lv3_desc: "Intense. Inconfortable. Parfois humiliant. Pas pour tout le monde. Vraiment pas.",
+    // Auth
+    auth_sub: "Rejoins les gens qui progressent pour de vrai — pas ceux qui en parlent.",
+    auth_login: 'Connexion', auth_signup: 'Créer un compte',
+    auth_pseudo: 'Pseudo', auth_email: 'Email', auth_pwd: 'Mot de passe',
+    auth_btn_login: 'Se connecter', auth_btn_signup: 'Créer mon compte',
+    auth_or: '— ou —', auth_google: 'Continuer avec Google',
+    // App topbar
+    tb_today: "Aujourd'hui",
+    // Challenge
+    ch_video_title: 'Filme ton défi — 10s minimum',
+    ch_video_sub: "Toi, là, maintenant. Pas une vidéo d'avant. L'IA regarde.",
+    ch_desc_label: "Ce que t'as fait",
+    ch_desc_ph: "Ex: J'ai lu 34 pages d'Atomic Habits. Assis par terre parce que le canapé c'est trop confort.",
+    ch_submit: 'Valider mon défi',
+    ch_anti_cheat: "Vidéo vraie + selfie + description. Pas de triche possible.",
+    ch_done_sub: "Preuve acceptée · Partagé avec tes amis",
+    vi_video: 'Vidéo', vi_ia: 'IA ✓', vi_selfie: 'Selfie', vi_desc: 'Description',
+    rec_stop_hint: ' secondes !',
+    // Feed
+    feed_lock_title: "Poste ta preuve d'abord",
+    feed_lock_sub: "Tu vois les preuves de tes amis seulement après avoir partagé la tienne. Comme BeReal — mais pour les choses qui comptent vraiment.",
+    feed_lock_btn: 'Aller poster ma preuve →',
+    feed_invite_title: 'Invite tes amis',
+    feed_invite_sub: "Vois leurs preuves quotidiennes et progressez ensemble.",
+    feed_invite_btn: 'Inviter des amis',
+    feed_private_hint: "🔒 Ce compte est privé — tu vois ses posts parce que tu es ami(e) avec lui/elle",
+    // Profile
+    pro_bio_ph: 'Tape ici pour ajouter une bio…',
+    pro_edit_btn: '✏️ Modifier le profil',
+    pro_lang_btn: '🌍 Langue',
+    priv_public_title: 'Compte public',
+    priv_public_sub: 'Tes défis sont visibles par tout le monde',
+    priv_private_title: 'Compte privé',
+    priv_private_sub: 'Seuls tes amis voient tes défis',
+    priv_public_lbl: 'Public', priv_private_lbl: 'Privé',
+    priv_toast_on: '🔒 Compte privé activé', priv_toast_off: '🌐 Compte public activé',
+    sec_cats: 'Catégories', sec_badges: 'Badges',
+    set_edit: '✏️ Modifier mon profil',
+    set_intensity: "⚡ Changer d'intensité",
+    set_lang: '🌍 Changer de langue',
+    set_notif: '🔔 Notifications push',
+    set_logout: 'Se déconnecter',
+    // Edit profile modal
+    edit_title: 'Mon profil', edit_photo_btn: '📷 Changer',
+    edit_emoji_hint: 'Ou choisis un emoji',
+    edit_pseudo_lbl: 'Pseudo', edit_bio_lbl: 'Bio',
+    edit_bio_ph: 'Dis en une phrase pourquoi tu utilises dare.',
+    edit_bio_opt: '(optionnelle)', edit_save: 'Sauvegarder',
+    // Intensity modal
+    mo_int_title: "Changer d'intensité", mo_int_sub: 'Le prochain défi s\'adapte immédiatement.',
+    mo_save: 'Enregistrer',
+    // Toasts
+    toast_copied: 'Lien copié !', toast_notif: 'Notifications bientôt !',
+    toast_fire: '🔥 !', toast_saved: '✓ Profil mis à jour !',
+    toast_private_on: '🔒 Compte privé activé', toast_private_off: '🌐 Compte public activé',
+    toast_photo: '📷 Photo de profil mise à jour !',
+    // Notif
+    notif_received: 'Défi reçu !', notif_sub: 'Vidéo obligatoire. L\'IA vérifie.',
+    // Streak
+    streak_label: 'Jours de suite', streak_record: 'Record perso',
+    xp_level: 'Niveau', days: ['L','M','M','J','V','S','D'],
+    // Logout confirm
+    logout_confirm: 'Se déconnecter ?',
+  },
+
+  en: {
+    nav_defi: 'Challenge', nav_amis: 'Friends', nav_profil: 'Profile',
+    ob_next: 'Next →', ob_skip: 'Skip intro',
+    ob1_title: "One challenge a day,", ob1_hl: "out of nowhere",
+    ob1_body: "The notification drops without warning. You have 4 hours. Not 'tonight'. Not 'tomorrow'. Now. Sport, reading, meditation, courage. Adapted to you.",
+    ob2_title: "Video required.", ob2_hl: "AI checks it.",
+    ob2_body: "Film yourself doing it. 10 seconds minimum. AI is watching. Not an old video. You, right now.",
+    ob3_title: "Your friends see you", ob3_hl: "for real.",
+    ob3_body: "You access the feed only after posting your proof. Streaks. XP. Badges. Nobody can cheat.",
+    int_step: 'Step 1 / 2', int_h: "What's your honest level?",
+    int_sub: "Be honest with yourself — not with us. You can change anytime.",
+    int_continue: 'Continue →',
+    lv1_name: 'Taking it easy',
+    lv1_desc: "Building the habit without pressure. Short challenges. The point is to do it every day — even on Wednesdays when you really don't feel like it.",
+    lv2_name: 'I want to challenge myself',
+    lv2_desc: "You step out of your comfort zone. It stings a bit. That's the point. You'll actually progress.",
+    lv3_name: "Let's go!",
+    lv3_desc: "Intense. Uncomfortable. Sometimes humiliating. Not for everyone. Really.",
+    auth_sub: "Join the people who actually make progress — not the ones who talk about it.",
+    auth_login: 'Login', auth_signup: 'Create account',
+    auth_pseudo: 'Username', auth_email: 'Email', auth_pwd: 'Password',
+    auth_btn_login: 'Log in', auth_btn_signup: 'Create my account',
+    auth_or: '— or —', auth_google: 'Continue with Google',
+    tb_today: 'Today',
+    ch_video_title: 'Film your challenge — 10s min',
+    ch_video_sub: "You, right now. Not an old video. AI is watching.",
+    ch_desc_label: "What you did",
+    ch_desc_ph: "Ex: Read 34 pages of Atomic Habits. Sitting on the floor because the couch is too comfortable.",
+    ch_submit: 'Submit my challenge',
+    ch_anti_cheat: "Real video + selfie + description. No cheating possible.",
+    ch_done_sub: "Proof accepted · Shared with your friends",
+    vi_video: 'Video', vi_ia: 'AI ✓', vi_selfie: 'Selfie', vi_desc: 'Description',
+    rec_stop_hint: ' seconds!',
+    feed_lock_title: "Post your proof first",
+    feed_lock_sub: "You see your friends' proof only after sharing yours. Like BeReal — but for things that actually matter.",
+    feed_lock_btn: 'Go post my proof →',
+    feed_invite_title: 'Invite your friends',
+    feed_invite_sub: "See their daily proof and grow together.",
+    feed_invite_btn: 'Invite friends',
+    feed_private_hint: "🔒 This account is private — you can see their posts because you're friends",
+    pro_bio_ph: 'Tap to add a bio…',
+    pro_edit_btn: '✏️ Edit profile',
+    pro_lang_btn: '🌍 Language',
+    priv_public_title: 'Public account',
+    priv_public_sub: 'Your challenges are visible to everyone',
+    priv_private_title: 'Private account',
+    priv_private_sub: 'Only your friends see your challenges',
+    priv_public_lbl: 'Public', priv_private_lbl: 'Private',
+    priv_toast_on: '🔒 Private account enabled', priv_toast_off: '🌐 Public account enabled',
+    sec_cats: 'Categories', sec_badges: 'Badges',
+    set_edit: '✏️ Edit my profile', set_intensity: '⚡ Change intensity',
+    set_lang: '🌍 Change language', set_notif: '🔔 Push notifications',
+    set_logout: 'Log out',
+    edit_title: 'My profile', edit_photo_btn: '📷 Change',
+    edit_emoji_hint: 'Or pick an emoji',
+    edit_pseudo_lbl: 'Username', edit_bio_lbl: 'Bio',
+    edit_bio_ph: 'Tell us in one sentence why you use dare.',
+    edit_bio_opt: '(optional)', edit_save: 'Save',
+    mo_int_title: 'Change intensity', mo_int_sub: 'Next challenge adapts immediately.',
+    mo_save: 'Save',
+    toast_copied: 'Link copied!', toast_notif: 'Notifications coming soon!',
+    toast_fire: '🔥!', toast_saved: '✓ Profile updated!',
+    toast_private_on: '🔒 Private account enabled', toast_private_off: '🌐 Public account enabled',
+    toast_photo: '📷 Profile picture updated!',
+    notif_received: 'Challenge received!', notif_sub: 'Video required. AI checks it.',
+    streak_label: 'Day streak', streak_record: 'Personal record',
+    xp_level: 'Level', days: ['M','T','W','T','F','S','S'],
+    logout_confirm: 'Log out?',
+  },
+
+  es: {
+    nav_defi: 'Reto', nav_amis: 'Amigos', nav_profil: 'Perfil',
+    ob_next: 'Siguiente →', ob_skip: 'Saltar intro',
+    ob1_title: "Un reto al día,", ob1_hl: "cuando menos te lo esperas",
+    ob1_body: "La notificación llega sin aviso. Tienes 4 horas. No 'esta noche'. No 'mañana'. Ahora. Deporte, lectura, meditación, valentía. Adaptado a ti.",
+    ob2_title: "Vídeo obligatorio.", ob2_hl: "La IA lo verifica.",
+    ob2_body: "Grábate haciéndolo. Mínimo 10 segundos. La IA lo mira. No un vídeo antiguo. Tú, ahora mismo.",
+    ob3_title: "Tus amigos te ven", ob3_hl: "de verdad.",
+    ob3_body: "Solo accedes al feed después de publicar tu prueba. Rachas. XP. Logros. Nadie puede hacer trampa.",
+    int_step: 'Paso 1 / 2', int_h: "¿Cuál es tu nivel honesto?",
+    int_sub: "Sé honesto contigo mismo — no con nosotros. Puedes cambiar cuando quieras.",
+    int_continue: 'Continuar →',
+    lv1_name: 'Empiezo tranquilo',
+    lv1_desc: "Crear el hábito sin presión. Retos cortos. Lo importante es hacerlo cada día — incluso cuando no apetece.",
+    lv2_name: 'Quiero superarme',
+    lv2_desc: "Sales de tu zona de confort. Duele un poco. Es lo que buscamos. Vas a progresar de verdad.",
+    lv3_name: '¡Estoy listo!',
+    lv3_desc: "Intenso. Incómodo. A veces humillante. No para todos. En serio.",
+    auth_sub: "Únete a los que progresan de verdad — no a los que hablan de ello.",
+    auth_login: 'Iniciar sesión', auth_signup: 'Crear cuenta',
+    auth_pseudo: 'Usuario', auth_email: 'Email', auth_pwd: 'Contraseña',
+    auth_btn_login: 'Iniciar sesión', auth_btn_signup: 'Crear mi cuenta',
+    auth_or: '— o —', auth_google: 'Continuar con Google',
+    tb_today: 'Hoy',
+    ch_video_title: 'Graba tu reto — mín. 10s',
+    ch_video_sub: "Tú, ahora mismo. No un vídeo antiguo. La IA mira.",
+    ch_desc_label: "Lo que hiciste",
+    ch_desc_ph: "Ej: Leí 34 páginas de Hábitos Atómicos. Sentado en el suelo porque el sofá es demasiado cómodo.",
+    ch_submit: 'Validar mi reto',
+    ch_anti_cheat: "Vídeo real + selfie + descripción. Sin trampa posible.",
+    ch_done_sub: "Prueba aceptada · Compartida con tus amigos",
+    vi_video: 'Vídeo', vi_ia: 'IA ✓', vi_selfie: 'Selfie', vi_desc: 'Descripción',
+    rec_stop_hint: ' segundos!',
+    feed_lock_title: "Publica tu prueba primero",
+    feed_lock_sub: "Ves las pruebas de tus amigos solo después de compartir la tuya. Como BeReal — pero para lo que importa de verdad.",
+    feed_lock_btn: 'Ir a publicar mi prueba →',
+    feed_invite_title: 'Invita a tus amigos',
+    feed_invite_sub: "Ve sus pruebas diarias y creced juntos.",
+    feed_invite_btn: 'Invitar amigos',
+    feed_private_hint: "🔒 Esta cuenta es privada — ves sus posts porque sois amigos",
+    pro_bio_ph: 'Toca aquí para añadir una bio…',
+    pro_edit_btn: '✏️ Editar perfil',
+    pro_lang_btn: '🌍 Idioma',
+    priv_public_title: 'Cuenta pública',
+    priv_public_sub: 'Tus retos son visibles para todos',
+    priv_private_title: 'Cuenta privada',
+    priv_private_sub: 'Solo tus amigos ven tus retos',
+    priv_public_lbl: 'Público', priv_private_lbl: 'Privado',
+    priv_toast_on: '🔒 Cuenta privada activada', priv_toast_off: '🌐 Cuenta pública activada',
+    sec_cats: 'Categorías', sec_badges: 'Logros',
+    set_edit: '✏️ Editar mi perfil', set_intensity: '⚡ Cambiar intensidad',
+    set_lang: '🌍 Cambiar idioma', set_notif: '🔔 Notificaciones push',
+    set_logout: 'Cerrar sesión',
+    edit_title: 'Mi perfil', edit_photo_btn: '📷 Cambiar',
+    edit_emoji_hint: 'O elige un emoji',
+    edit_pseudo_lbl: 'Usuario', edit_bio_lbl: 'Bio',
+    edit_bio_ph: 'Dinos en una frase por qué usas dare.',
+    edit_bio_opt: '(opcional)', edit_save: 'Guardar',
+    mo_int_title: 'Cambiar intensidad', mo_int_sub: 'El siguiente reto se adapta de inmediato.',
+    mo_save: 'Guardar',
+    toast_copied: '¡Enlace copiado!', toast_notif: '¡Notificaciones próximamente!',
+    toast_fire: '🔥!', toast_saved: '✓ ¡Perfil actualizado!',
+    toast_private_on: '🔒 Cuenta privada activada', toast_private_off: '🌐 Cuenta pública activada',
+    toast_photo: '📷 ¡Foto de perfil actualizada!',
+    notif_received: '¡Reto recibido!', notif_sub: 'Vídeo obligatorio. La IA lo verifica.',
+    streak_label: 'Días seguidos', streak_record: 'Récord personal',
+    xp_level: 'Nivel', days: ['L','M','X','J','V','S','D'],
+    logout_confirm: '¿Cerrar sesión?',
+  },
+
+  de: {
+    nav_defi: 'Challenge', nav_amis: 'Freunde', nav_profil: 'Profil',
+    ob_next: 'Weiter →', ob_skip: 'Intro überspringen',
+    ob1_title: "Eine Challenge pro Tag,", ob1_hl: "unerwartet",
+    ob1_body: "Die Benachrichtigung kommt ohne Vorwarnung. Du hast 4 Stunden. Nicht 'heute Abend'. Nicht 'morgen'. Jetzt. Sport, Lesen, Meditation, Mut. Angepasst an dich.",
+    ob2_title: "Video Pflicht.", ob2_hl: "KI prüft es.",
+    ob2_body: "Film dich beim Machen. Mindestens 10 Sekunden. Die KI schaut zu. Kein altes Video. Du, jetzt, live.",
+    ob3_title: "Deine Freunde sehen dich", ob3_hl: "wirklich.",
+    ob3_body: "Du siehst den Feed erst nach deinem eigenen Post. Streaks. XP. Abzeichen. Niemand kann schummeln.",
+    int_step: 'Schritt 1 / 2', int_h: "Was ist dein ehrliches Level?",
+    int_sub: "Sei ehrlich zu dir — nicht zu uns. Du kannst jederzeit wechseln.",
+    int_continue: 'Weiter →',
+    lv1_name: 'Ich fange ruhig an',
+    lv1_desc: "Gewohnheit aufbauen ohne Druck. Kurze Challenges. Das Wichtige ist: jeden Tag — auch mittwochs wenn du keine Lust hast.",
+    lv2_name: 'Ich will mich fordern',
+    lv2_desc: "Du verlässt deine Komfortzone. Es tut ein bisschen weh. Das ist Absicht. Du wirst wirklich Fortschritte machen.",
+    lv3_name: 'Ich bin bereit!',
+    lv3_desc: "Intensiv. Unangenehm. Manchmal demütigend. Nicht für jeden. Wirklich nicht.",
+    auth_sub: "Schließ dich denen an, die wirklich Fortschritte machen — nicht denen, die nur reden.",
+    auth_login: 'Anmelden', auth_signup: 'Konto erstellen',
+    auth_pseudo: 'Benutzername', auth_email: 'E-Mail', auth_pwd: 'Passwort',
+    auth_btn_login: 'Anmelden', auth_btn_signup: 'Mein Konto erstellen',
+    auth_or: '— oder —', auth_google: 'Mit Google fortfahren',
+    tb_today: 'Heute',
+    ch_video_title: 'Film deine Challenge — mind. 10s',
+    ch_video_sub: "Du, jetzt. Kein altes Video. Die KI schaut.",
+    ch_desc_label: "Was du gemacht hast",
+    ch_desc_ph: "Z.B.: 34 Seiten Atomic Habits gelesen. Auf dem Boden, weil die Couch zu bequem ist.",
+    ch_submit: 'Challenge einreichen',
+    ch_anti_cheat: "Echtes Video + Selfie + Beschreibung. Kein Schummeln möglich.",
+    ch_done_sub: "Beweis akzeptiert · Mit deinen Freunden geteilt",
+    vi_video: 'Video', vi_ia: 'KI ✓', vi_selfie: 'Selfie', vi_desc: 'Beschreibung',
+    rec_stop_hint: ' Sekunden!',
+    feed_lock_title: "Post deinen Beweis zuerst",
+    feed_lock_sub: "Du siehst die Beweise deiner Freunde erst nach deinem eigenen. Wie BeReal — aber für Dinge, die wirklich zählen.",
+    feed_lock_btn: 'Meinen Beweis posten →',
+    feed_invite_title: 'Lade deine Freunde ein',
+    feed_invite_sub: "Sieh ihre täglichen Beweise und wachst zusammen.",
+    feed_invite_btn: 'Freunde einladen',
+    feed_private_hint: "🔒 Dieses Konto ist privat — du siehst die Posts weil ihr befreundet seid",
+    pro_bio_ph: 'Tippe hier für eine Bio…',
+    pro_edit_btn: '✏️ Profil bearbeiten',
+    pro_lang_btn: '🌍 Sprache',
+    priv_public_title: 'Öffentliches Konto',
+    priv_public_sub: 'Deine Challenges sind für alle sichtbar',
+    priv_private_title: 'Privates Konto',
+    priv_private_sub: 'Nur deine Freunde sehen deine Challenges',
+    priv_public_lbl: 'Öffentlich', priv_private_lbl: 'Privat',
+    priv_toast_on: '🔒 Privates Konto aktiviert', priv_toast_off: '🌐 Öffentliches Konto aktiviert',
+    sec_cats: 'Kategorien', sec_badges: 'Abzeichen',
+    set_edit: '✏️ Profil bearbeiten', set_intensity: '⚡ Intensität ändern',
+    set_lang: '🌍 Sprache ändern', set_notif: '🔔 Push-Benachrichtigungen',
+    set_logout: 'Abmelden',
+    edit_title: 'Mein Profil', edit_photo_btn: '📷 Ändern',
+    edit_emoji_hint: 'Oder wähle ein Emoji',
+    edit_pseudo_lbl: 'Benutzername', edit_bio_lbl: 'Bio',
+    edit_bio_ph: 'Sag in einem Satz warum du dare. nutzt.',
+    edit_bio_opt: '(optional)', edit_save: 'Speichern',
+    mo_int_title: 'Intensität ändern', mo_int_sub: 'Die nächste Challenge passt sich sofort an.',
+    mo_save: 'Speichern',
+    toast_copied: 'Link kopiert!', toast_notif: 'Benachrichtigungen kommen bald!',
+    toast_fire: '🔥!', toast_saved: '✓ Profil aktualisiert!',
+    toast_private_on: '🔒 Privates Konto aktiviert', toast_private_off: '🌐 Öffentliches Konto aktiviert',
+    toast_photo: '📷 Profilbild aktualisiert!',
+    notif_received: 'Challenge erhalten!', notif_sub: 'Video Pflicht. KI prüft es.',
+    streak_label: 'Tage in Folge', streak_record: 'Persönlicher Rekord',
+    xp_level: 'Level', days: ['M','D','M','D','F','S','S'],
+    logout_confirm: 'Abmelden?',
+  },
+
+  pt: {
+    nav_defi: 'Desafio', nav_amis: 'Amigos', nav_profil: 'Perfil',
+    ob_next: 'Próximo →', ob_skip: 'Pular intro',
+    ob1_title: "Um desafio por dia,", ob1_hl: "sem avisar",
+    ob1_body: "A notificação chega sem aviso. Você tem 4 horas. Não 'hoje à noite'. Não 'amanhã'. Agora. Esporte, leitura, meditação, coragem. Adaptado a você.",
+    ob2_title: "Vídeo obrigatório.", ob2_hl: "A IA verifica.",
+    ob2_body: "Se filme fazendo. Mínimo 10 segundos. A IA assiste. Não um vídeo antigo. Você, agora, de verdade.",
+    ob3_title: "Seus amigos te veem", ob3_hl: "de verdade.",
+    ob3_body: "Você acessa o feed só depois de postar sua prova. Streaks. XP. Conquistas. Ninguém pode trapacear.",
+    int_step: 'Passo 1 / 2', int_h: "Qual é o seu nível honesto?",
+    int_sub: "Seja honesto consigo mesmo — não conosco. Você pode mudar quando quiser.",
+    int_continue: 'Continuar →',
+    lv1_name: 'Começo devagar',
+    lv1_desc: "Criar o hábito sem pressão. Desafios curtos. O essencial é fazer todos os dias — mesmo quando não dá vontade.",
+    lv2_name: 'Quero me desafiar',
+    lv2_desc: "Você sai da zona de conforto. Dói um pouco. É de propósito. Você vai progredir de verdade.",
+    lv3_name: 'Tô pronto!',
+    lv3_desc: "Intenso. Desconfortável. Às vezes humilhante. Não é para qualquer um. Sério.",
+    auth_sub: "Junte-se aos que realmente progridem — não aos que só falam sobre isso.",
+    auth_login: 'Entrar', auth_signup: 'Criar conta',
+    auth_pseudo: 'Usuário', auth_email: 'E-mail', auth_pwd: 'Senha',
+    auth_btn_login: 'Entrar', auth_btn_signup: 'Criar minha conta',
+    auth_or: '— ou —', auth_google: 'Continuar com Google',
+    tb_today: 'Hoje',
+    ch_video_title: 'Filme seu desafio — mín. 10s',
+    ch_video_sub: "Você, agora. Não um vídeo antigo. A IA está assistindo.",
+    ch_desc_label: "O que você fez",
+    ch_desc_ph: "Ex: Li 34 páginas de Hábitos Atômicos. Sentado no chão porque o sofá é confortável demais.",
+    ch_submit: 'Validar meu desafio',
+    ch_anti_cheat: "Vídeo real + selfie + descrição. Sem trapaça possível.",
+    ch_done_sub: "Prova aceita · Compartilhada com seus amigos",
+    vi_video: 'Vídeo', vi_ia: 'IA ✓', vi_selfie: 'Selfie', vi_desc: 'Descrição',
+    rec_stop_hint: ' segundos!',
+    feed_lock_title: "Poste sua prova primeiro",
+    feed_lock_sub: "Você vê as provas dos seus amigos só depois de compartilhar a sua. Como BeReal — mas para o que realmente importa.",
+    feed_lock_btn: 'Ir postar minha prova →',
+    feed_invite_title: 'Convide seus amigos',
+    feed_invite_sub: "Veja as provas deles e cresçam juntos.",
+    feed_invite_btn: 'Convidar amigos',
+    feed_private_hint: "🔒 Esta conta é privada — você vê os posts porque são amigos",
+    pro_bio_ph: 'Toque para adicionar uma bio…',
+    pro_edit_btn: '✏️ Editar perfil',
+    pro_lang_btn: '🌍 Idioma',
+    priv_public_title: 'Conta pública',
+    priv_public_sub: 'Seus desafios são visíveis para todos',
+    priv_private_title: 'Conta privada',
+    priv_private_sub: 'Só seus amigos veem seus desafios',
+    priv_public_lbl: 'Público', priv_private_lbl: 'Privado',
+    priv_toast_on: '🔒 Conta privada ativada', priv_toast_off: '🌐 Conta pública ativada',
+    sec_cats: 'Categorias', sec_badges: 'Conquistas',
+    set_edit: '✏️ Editar meu perfil', set_intensity: '⚡ Mudar intensidade',
+    set_lang: '🌍 Mudar idioma', set_notif: '🔔 Notificações push',
+    set_logout: 'Sair',
+    edit_title: 'Meu perfil', edit_photo_btn: '📷 Mudar',
+    edit_emoji_hint: 'Ou escolha um emoji',
+    edit_pseudo_lbl: 'Usuário', edit_bio_lbl: 'Bio',
+    edit_bio_ph: 'Diga em uma frase por que você usa dare.',
+    edit_bio_opt: '(opcional)', edit_save: 'Salvar',
+    mo_int_title: 'Mudar intensidade', mo_int_sub: 'O próximo desafio se adapta imediatamente.',
+    mo_save: 'Salvar',
+    toast_copied: 'Link copiado!', toast_notif: 'Notificações em breve!',
+    toast_fire: '🔥!', toast_saved: '✓ Perfil atualizado!',
+    toast_private_on: '🔒 Conta privada ativada', toast_private_off: '🌐 Conta pública ativada',
+    toast_photo: '📷 Foto de perfil atualizada!',
+    notif_received: 'Desafio recebido!', notif_sub: 'Vídeo obrigatório. A IA verifica.',
+    streak_label: 'Dias seguidos', streak_record: 'Recorde pessoal',
+    xp_level: 'Nível', days: ['S','T','Q','Q','S','S','D'],
+    logout_confirm: 'Sair?',
+  }
+};
+function t(key){ return (TRANSLATIONS[S.lang]||TRANSLATIONS.fr)[key] || TRANSLATIONS.fr[key] || key; }
+
+// ══ STATE ══
+const S = {
+  lv:2, name:'Joueur', av:'🦊', bio:'', customAvImg:'', lang:'fr', streak:0, record:0, xp:0, total:0,
+  friends:['Sarah','Max','Julie'],  // liste des amis (par pseudo)
+  cats:{rd:0,mi:0,sp:0,co:0,cr:0},
+  isPrivate:false,
+  obIdx:0, aMode:'login', done:false, timerSecs:14400, cIdx:0,
+  videoBlob:null, selfieData:null, descOk:false, aiOk:false, feedUnlocked:false,
+  mediaStream:null, mediaRecorder:null, recChunks:[], recInterval:null, recSecs:0,
+};
+
+// ══ CHALLENGES ══
+const CH = {
+  1:[
+    {t:'Lis 10 pages sans téléphone',d:'Ouvre un vrai livre. 10 pages. Téléphone face cachée.',xp:10,cat:'Lecture',ck:'rd',kicker:'Développement · 🌱 Tranquille'},
+    {t:'5 minutes de méditation',d:'Assis, yeux fermés. 5 minutes de calme total.',xp:8,cat:'Mindfulness',ck:'mi',kicker:'Mindfulness · 🌱 Tranquille'},
+    {t:'Marche 10 min en plein air',d:'Dehors. 10 minutes. Respire et observe.',xp:8,cat:'Sport',ck:'sp',kicker:'Sport · 🌱 Tranquille'},
+    {t:'Écris 3 pensées positives',d:'Journal. 3 choses pour lesquelles tu es reconnaissant·e.',xp:8,cat:'Mindfulness',ck:'mi',kicker:'Mindfulness · 🌱 Tranquille'},
+    {t:'Étirements 8 minutes',d:'Dos, jambes, cou, épaules. Prends le temps.',xp:8,cat:'Sport',ck:'sp',kicker:'Sport · 🌱 Tranquille'},
+  ],
+  2:[
+    {t:'Lis 30 pages sans interruption',d:'30 pages. Pas de notifications. Pas de pauses "juste 2 secondes". Filme-toi au début et à la fin.',xp:20,cat:'Lecture',ck:'rd',kicker:'Développement · 🔥 Challenge'},
+    {t:'Méditation 15 min guidée',d:'15 minutes de pratique consciente. Note ce que tu ressens après.',xp:16,cat:'Mindfulness',ck:'mi',kicker:'Mindfulness · 🔥 Challenge'},
+    {t:'Course 15 min sans s\'arrêter',d:'15 minutes de course continue. Chrono. Prouve-le.',xp:20,cat:'Sport',ck:'sp',kicker:'Sport · 🔥 Challenge'},
+    {t:'Parle à un·e inconnu·e',d:'Une vraie conversation. Café, bus, librairie. Note comment ça s\'est passé.',xp:22,cat:'Courage',ck:'co',kicker:'Courage social · 🔥 Challenge'},
+    {t:'Crée quelque chose en 20 min',d:'Dessin, texte, musique, code. Produis quelque chose de rien.',xp:18,cat:'Créativité',ck:'cr',kicker:'Créativité · 🔥 Challenge'},
+    {t:'30 min sans téléphone ni écran',d:'Minuterie. 30 minutes. Aucun écran. Note ce que tu as fait.',xp:18,cat:'Mindfulness',ck:'mi',kicker:'Mindfulness · 🔥 Challenge'},
+  ],
+  3:[
+    {t:'Lis 60 pages en une session',d:'60 pages d\'un coup. Pas de pause supérieure à 5 min. C\'est long. C\'est voulu.',xp:40,cat:'Lecture',ck:'rd',kicker:'Développement · 💀 Extrême'},
+    {t:'Sport 30 min avant 7h du matin',d:'Réveil. Dehors. 30 min de sport avant 7h. Photo avec l\'heure visible.',xp:50,cat:'Sport',ck:'sp',kicker:'Sport · 💀 Extrême'},
+    {t:'Sans téléphone pendant 8h',d:'Étein ton téléphone à 9h. Rallume-le à 17h. Documente ce que tu as accompli.',xp:55,cat:'Courage',ck:'co',kicker:'Courage · 💀 Extrême'},
+    {t:'Chante ou joue devant des gens',d:'Interprète quelque chose devant au moins 2 personnes. Grave la vidéo.',xp:45,cat:'Courage',ck:'co',kicker:'Courage social · 💀 Extrême'},
+    {t:'100 burpees non-stop',d:'100 burpees complets. Tu peux souffler mais pas t\'allonger. Documente.',xp:45,cat:'Sport',ck:'sp',kicker:'Sport · 💀 Extrême'},
+  ],
+};
+const LVS=[{n:'Rookie',min:0,max:100},{n:'Active',min:100,max:250},{n:'Challenger',min:250,max:500},{n:'Expert',min:500,max:900},{n:'Elite',min:900,max:1500},{n:'Legend',min:1500,max:9999}];
+const INT={1:{n:'Tranquille',e:'🌱'},2:{n:'Challenge',e:'🔥'},3:{n:'Extrême',e:'💀'}};
+const CAT_COLORS={'Lecture':'var(--bl)','Mindfulness':'var(--gn)','Sport':'var(--or)','Courage':'var(--pk)','Créativité':'var(--pu)'};
+
+const FEED_SEED=[
+  {n:'Sarah',av:'S',bg:'#7c3aed',ch:'Lis 30 pages',cat:'Lecture',cap:"Lu 34 pages d'Atomic Habits. Assis par terre parce que le canapé c'est trop confort. Le chapitre sur l'identité m'a un peu retourné la tête, j'avoue.",time:'22 min',fires:18,em:'📖',aiOk:true,priv:false},
+  {n:'Max',av:'M',bg:'#0ea5e9',ch:'Course 15 min',cat:'Sport',cap:"2.4km. Pas folichon mais j'ai pas arrêté. Jambes comme du beurre fondu après. Je compte ça comme une victoire.",time:'1h 10min',fires:31,em:'🏃',aiOk:true,priv:false},
+  {n:'Julie',av:'J',bg:'#22c55e',ch:'Méditation 15 min',cat:'Mindfulness',cap:"15 minutes. J'ai pensé à ma liste de courses pendant les 5 premières. Puis quelque chose a changé. Bizarre comme sensation.",time:'2h 15min',fires:24,em:'🧘',aiOk:true,priv:true},
+  {n:'Thomas',av:'T',bg:'#f97316',ch:'Parle à un inconnu',cat:'Courage',cap:"J'ai parlé au gars dans la file à la boulangerie. Il m'a donné une recette de kouign-amann. Brest quoi.",time:'3h',fires:42,em:'💬',aiOk:true,priv:false},
+  {n:'Emma',av:'E',bg:'#ec4899',ch:'Crée quelque chose en 20 min',cat:'Créativité',cap:"J'ai dessiné un truc moche pendant 20 minutes. Franchement moche. Mais j'ai fait le défi et c'est ça qui compte.",time:'4h',fires:19,em:'🎨',aiOk:true,priv:false},
+];
+
+// ══ PWA ══
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});}
+let deferredInstall=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;});
+
+// ══ SPLASH ══
+setTimeout(()=>go('splash','onboard'),2800);
+
+// ══ OB ══
+function obNext(){if(S.obIdx<2){S.obIdx++;document.getElementById('ob-wrap').style.transform=`translateX(-${S.obIdx*33.333}%)`;document.querySelectorAll('.pip').forEach((p,i)=>p.classList.toggle('on',i===S.obIdx));if(S.obIdx===2)document.getElementById('ob-btn').textContent='Choisir mon niveau →';}else goInt();}
+function goInt(){go('onboard','intensity');}
+
+// ══ LV PICK ══
+let chLv=null;
+function pickLv(el){document.querySelectorAll('.lv-list .lv').forEach(c=>{c.classList.remove('sel');c.querySelector('.lv-check').textContent='';});el.classList.add('sel');el.querySelector('.lv-check').textContent='✓';chLv=parseInt(el.dataset.lv);document.getElementById('btn-cont').disabled=false;}
+function goAuth(){if(chLv)S.lv=chLv;go('intensity','auth');}
+
+// ══ AUTH ══
+function swAuth(m){S.aMode=m;document.getElementById('at-l').classList.toggle('on',m==='login');document.getElementById('at-s').classList.toggle('on',m==='signup');document.getElementById('f-un').style.display=m==='signup'?'block':'none';document.getElementById('f-av').style.display=m==='signup'?'block':'none';document.getElementById('auth-btn').textContent=m==='login'?'Se connecter':'Créer mon compte';}
+function pickAv(el){document.querySelectorAll('.av-i').forEach(a=>a.classList.remove('on'));el.classList.add('on');S.av=el.textContent;}
+function doAuth(){
+  const un=document.getElementById('inp-un').value.trim();
+  if(S.aMode==='signup'&&un)S.name=un;
+  go('auth','app');initApp();
+  if(S.aMode==='signup'){
+    const lvName=['','Tranquille','Challenge','Extrême'][S.lv]||'?';
+    try{
+      // Stockage local — partagé avec index.html via localStorage
+      const STORE='dare_signups';
+      const arr=JSON.parse(localStorage.getItem(STORE)||'[]');
+      arr.unshift({name:S.name,level:lvName,ts:Date.now()});
+      localStorage.setItem(STORE,JSON.stringify(arr.slice(0,1000)));
+      // Notif email via EmailJS si configuré
+      const creatorEmail=localStorage.getItem('dare_creator_email');
+      const notifOn=localStorage.getItem('dare_notif')==='1';
+      const ejsPub=localStorage.getItem('dare_ejs_pubkey');
+      const ejsSvc=localStorage.getItem('dare_ejs_service');
+      const ejsTpl=localStorage.getItem('dare_ejs_tpl');
+      if(creatorEmail&&notifOn&&ejsPub&&ejsSvc&&ejsTpl){
+        // Envoyer via EmailJS (SDK chargé depuis index.html si même onglet, sinon on passe)
+        const now=new Date().toLocaleString('fr-FR',{dateStyle:'short',timeStyle:'short'});
+        if(typeof emailjs!=='undefined'){
+          emailjs.init({publicKey:ejsPub});
+          emailjs.send(ejsSvc,ejsTpl,{to_email:creatorEmail,user_name:S.name,user_level:lvName,total:arr.length,date:now})
+            .catch(e=>console.warn('[dare.] EmailJS:',e));
+        }
+      }
+      // Notif vers fenêtre parente si index.html est ouvert
+      if(window.opener&&window.opener.registerSignup) window.opener.registerSignup(S.name,lvName);
+    }catch(e){console.warn('[dare.] signup tracking:',e);}
+  }
+}
+
+// ══ INIT ══
+function initApp(){
+  document.getElementById('top-av').textContent=S.customAvImg?'':S.av;
+  updateProAvDisplay();
+  document.getElementById('pro-name').textContent=S.name;
+  renderCh();renderXP();renderStreak();updateLvChip();buildFeed();startTimer();
+  // Request push permission
+  if('Notification' in window && Notification.permission==='default'){
+    setTimeout(()=>Notification.requestPermission(),3000);
+  }
+  setTimeout(showNt,5000);
+  setTimeout(applyLang,50); // apply language after DOM ready
+}
+
+// ══ CHALLENGE ══
+function getCH(){return CH[S.lv];}
+function renderCh(){
+  const c=getCH()[S.cIdx%getCH().length];
+  document.getElementById('ch-kicker').textContent=c.kicker;
+  document.getElementById('ch-kicker').style.color=CAT_COLORS[c.cat]||'var(--acc)';
+  document.getElementById('ch-title').textContent=c.t;
+  document.getElementById('ch-xp').textContent='+'+c.xp;
+}
+
+// ══ VIDEO RECORDING ══
+async function startRecording(){
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:1280},height:{ideal:720}},audio:true});
+    S.mediaStream=stream;
+    document.getElementById('live-video').srcObject=stream;
+    document.getElementById('vz-empty').style.display='none';
+    document.getElementById('vz-recording').style.display='flex';
+    S.recChunks=[];S.recSecs=0;
+    S.mediaRecorder=new MediaRecorder(stream,{mimeType:'video/webm;codecs=vp8'});
+    S.mediaRecorder.ondataavailable=e=>{if(e.data.size>0)S.recChunks.push(e.data);};
+    S.mediaRecorder.onstop=()=>{
+      S.videoBlob=new Blob(S.recChunks,{type:'video/webm'});
+      const url=URL.createObjectURL(S.videoBlob);
+      document.getElementById('preview-vid').src=url;
+      document.getElementById('vz-recording').style.display='none';
+      document.getElementById('vz-preview').style.display='block';
+      document.getElementById('vz-selfie').style.display='flex';
+      document.getElementById('retake-btn').style.display='flex';
+      stream.getTracks().forEach(t=>t.stop());
+      analyzeVideo();
+    };
+    S.mediaRecorder.start(100);
+    S.recInterval=setInterval(()=>{
+      S.recSecs++;
+      const m=Math.floor(S.recSecs/60),sec=S.recSecs%60;
+      document.getElementById('rec-time').textContent=`${m}:${String(sec).padStart(2,'0')}`;
+    },1000);
+  }catch(err){
+    showToast('Caméra non disponible — mode démo activé');
+    simulateRecording();
+  }
+}
+
+function simulateRecording(){
+  document.getElementById('vz-empty').style.display='none';
+  document.getElementById('vz-recording').style.display='flex';
+  document.getElementById('vz-viewfinder').innerHTML='<div style="position:absolute;inset:0;background:#111;display:flex;align-items:center;justify-content:center;font-size:48px">🎥<div class="rec-indicator"><div class="rec-dot"></div><div class="rec-time" id="rec-time">0:00</div></div></div>';
+  S.recSecs=0;
+  S.recInterval=setInterval(()=>{S.recSecs++;const m=Math.floor(S.recSecs/60),sec=S.recSecs%60;const rt=document.getElementById('rec-time');if(rt)rt.textContent=`${m}:${String(sec).padStart(2,'0')}`;},1000);
+}
+
+function stopRecording(){
+  clearInterval(S.recInterval);
+  if(S.recSecs<10){showToast(`Encore ${10-S.recSecs} secondes !`);return;}
+  if(S.mediaRecorder&&S.mediaRecorder.state!=='inactive'){S.mediaRecorder.stop();}
+  else{
+    // demo mode
+    document.getElementById('vz-recording').style.display='none';
+    document.getElementById('vz-preview').style.display='block';
+    document.getElementById('vz-preview').innerHTML='<div style="width:100%;height:100%;background:#111;display:flex;align-items:center;justify-content:center;font-size:56px">🎥</div>';
+    document.getElementById('vz-selfie').style.display='flex';
+    document.getElementById('retake-btn').style.display='flex';
+    analyzeVideoDemo();
+  }
+}
+
+async function analyzeVideo(){
+  // Extract frame from video as canvas → base64 → send to Claude API
+  fxd('vz-checking','flex');fxd('vz-ok','none');fxd('vz-fail','none');
+  showAiMsg('⏳ L\'IA analyse ta vidéo…','loading');
+  const vid=document.getElementById('preview-vid');
+  await new Promise(r=>vid.addEventListener('loadeddata',r,{once:true}));
+  const canvas=document.createElement('canvas');
+  canvas.width=320;canvas.height=240;
+  const ctx=canvas.getContext('2d');
+  ctx.drawImage(vid,0,0,320,240);
+  const frame=canvas.toDataURL('image/jpeg',.7).split(',')[1];
+  const c=getCH()[S.cIdx%getCH().length];
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',max_tokens:120,
+        system:`Tu es un validateur anti-triche pour dare., une app de développement personnel. Réponds UNIQUEMENT en JSON: {"ok":true/false,"reason":"max 15 mots en français"}. ok=true si l'image montre une activité liée au défi "${c.t}" ou un effort de développement personnel (lecture, sport, méditation, créativité, etc). ok=false si c'est une image aléatoire sans rapport.`,
+        messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:frame}},{type:'text',text:`Cette image correspond-elle au défi : "${c.t}" ?`}]}]
+      })
+    });
+    const data=await res.json();
+    let result;
+    try{result=JSON.parse(data.content[0].text.replace(/```json|```/g,'').trim());}catch{result={ok:false,reason:'Impossible d\'analyser'};}
+    fxd('vz-checking','none');
+    if(result.ok){S.aiOk=true;fxd('vz-ok','flex');showAiMsg(`✓ ${result.reason}`,'ok');}
+    else{S.aiOk=false;fxd('vz-fail','flex');showAiMsg(`✗ ${result.reason} — Refais une vidéo du bon défi.`,'fail');setTimeout(retakeVideo,2500);}
+  }catch{
+    fxd('vz-checking','none');S.aiOk=true;fxd('vz-ok','flex');
+    showAiMsg('✓ Mode hors-ligne — vidéo acceptée','ok');
+  }
+  updateVal();
+}
+
+function analyzeVideoDemo(){
+  fxd('vz-checking','flex');fxd('vz-ok','none');fxd('vz-fail','none');
+  showAiMsg('⏳ L\'IA analyse ta vidéo…','loading');
+  setTimeout(()=>{
+    fxd('vz-checking','none');S.aiOk=true;fxd('vz-ok','flex');
+    showAiMsg('✓ Activité de développement personnel détectée','ok');
+    updateVal();
+  },2200);
+}
+
+function retakeVideo(){
+  S.videoBlob=null;S.selfieData=null;S.aiOk=false;
+  document.getElementById('vz-empty').style.display='flex';
+  document.getElementById('vz-recording').style.display='none';
+  document.getElementById('vz-preview').style.display='none';
+  document.getElementById('vz-selfie').style.display='none';
+  document.getElementById('selfie-img').style.display='none';
+  document.getElementById('selfie-em').style.display='block';
+  document.getElementById('retake-btn').style.display='none';
+  fxd('vz-checking','none');fxd('vz-ok','none');fxd('vz-fail','none');
+  document.getElementById('ai-msg').style.display='none';
+  updateVal();
+}
+
+function triggerSelfie(){document.getElementById('self-input').click();}
+function onSelfie(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    S.selfieData=ev.target.result;
+    document.getElementById('selfie-img').src=ev.target.result;document.getElementById('selfie-img').style.display='block';
+    document.getElementById('selfie-em').style.display='none';updateVal();
+  };r.readAsDataURL(f);
+}
+
+function onDesc(){const v=document.getElementById('desc-ta').value;const n=v.length;S.descOk=n>=25;const dc=document.getElementById('desc-cnt');dc.textContent=`${n} / 280`;dc.classList.toggle('ok',S.descOk);updateVal();}
+
+function showAiMsg(txt,cls){const m=document.getElementById('ai-msg');m.style.display='block';m.className='ai-msg '+cls;m.textContent=txt;}
+
+function updateVal(){
+  const v=!!S.videoBlob||document.getElementById('vz-preview').style.display!=='none',a=S.aiOk,s=!!S.selfieData,d=S.descOk;
+  document.getElementById('vi1').classList.toggle('ok',v);
+  document.getElementById('vi2').classList.toggle('ok',a);
+  document.getElementById('vi3').classList.toggle('ok',s);
+  document.getElementById('vi4').classList.toggle('ok',d);
+  const pct=Math.round((v?25:0)+(a?25:0)+(s?25:0)+(d?25:0));
+  const pp=document.getElementById('vs-pct');pp.textContent=pct+'%';pp.classList.toggle('ok',pct===100);
+  const rdy=v&&a&&s&&d;const btn=document.getElementById('btn-sub');
+  btn.disabled=!rdy;btn.classList.toggle('rdy',rdy);
+}
+
+// ══ SUBMIT ══
+function submitDare(){
+  const v=!!S.videoBlob||document.getElementById('vz-preview').style.display!=='none';
+  if(S.done||!v||!S.aiOk||!S.selfieData||!S.descOk)return;
+  S.done=true;
+  const c=getCH()[S.cIdx%getCH().length];
+  S.xp+=c.xp;S.total++;S.streak++;S.cats[c.ck]++;
+  if(S.streak>S.record)S.record=S.streak;
+  document.getElementById('top-sk').textContent=S.streak;
+  document.getElementById('ch-card').style.display='none';
+  const dc=document.getElementById('done-card');dc.classList.add('show');
+  if(S.videoBlob){const url=URL.createObjectURL(S.videoBlob);document.getElementById('dc-vid').src=url;document.getElementById('dc-vid').style.display='block';document.getElementById('dc-ph').style.display='none';}
+  if(S.selfieData){document.getElementById('dc-selfie').src=S.selfieData;document.getElementById('dc-selfie').style.display='block';}
+  document.getElementById('dc-cap').textContent='"'+document.getElementById('desc-ta').value+'"';
+  document.getElementById('dcs-xp').textContent='+'+c.xp;document.getElementById('dcs-sk').textContent=S.streak;document.getElementById('dcs-tot').textContent=S.total;
+  document.getElementById('d6').classList.add('ok');document.getElementById('d6').textContent='✓';
+  S.feedUnlocked=true;
+  FEED_SEED.unshift({n:S.name,av:S.av,bg:'var(--pu2)',ch:c.t,cat:c.cat,cap:document.getElementById('desc-ta').value,time:'À l\'instant',fires:0,em:c.t.includes('li')||c.t.includes('Li')?'📖':c.t.includes('mé')||c.t.includes('Mé')?'🧘':'🎯',aiOk:true,priv:S.isPrivate,own:true,vidBlob:S.videoBlob,selfData:S.selfieData});
+  buildFeed();renderXP();renderStreak();renderProfile();
+  showToast(`✓ Validé ! +${c.xp} XP 🔥`);
+}
+
+// ══ TIMER ══
+function startTimer(){
+  setInterval(()=>{
+    if(S.timerSecs>0&&!S.done){S.timerSecs--;const h=Math.floor(S.timerSecs/3600),m=Math.floor((S.timerSecs%3600)/60),s=S.timerSecs%60;const t=`${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;document.getElementById('tb-timer').textContent=t;document.getElementById('tp-val').textContent=t;}
+  },1000);
+}
+
+// ══ NOTIF ══
+function showNt(){const m=INT[S.lv];document.getElementById('nt-em').textContent='⚡';document.getElementById('nt-t').textContent=`${m.e} ${t('notif_received')}`;document.getElementById('nt-s').textContent=t('notif_sub');const n=document.getElementById('nt');n.classList.add('show');setTimeout(()=>n.classList.remove('show'),5000);}
+function closeNt(){document.getElementById('nt').classList.remove('show');}
+
+// ══ XP ══
+function getLv(xp){for(let i=LVS.length-1;i>=0;i--)if(xp>=LVS[i].min)return{i:i+1,...LVS[i]};return{i:1,...LVS[0]};}
+function renderXP(){const info=getLv(S.xp);const pct=Math.round(((S.xp-info.min)/(info.max-info.min))*100);document.getElementById('xp-bar').style.width=pct+'%';document.getElementById('xpw-v').textContent=`${S.xp} / ${info.max} XP`;document.getElementById('xpw-lv').textContent=`Niveau ${info.i} — ${info.n}`;document.getElementById('lv-scroll').innerHTML=LVS.map((l,i)=>{const cls=S.xp>=l.max?'got':S.xp>=l.min?'cur':'lck';return`<div class="lc ${cls}">${cls==='got'?'✓ ':cls==='cur'?'→ ':''}${l.n}</div>`;}).join('');}
+function renderStreak(){document.getElementById('sk-n').textContent=S.streak;document.getElementById('rec-n').textContent=S.record+' jours';}
+function updateLvChip(){const m=INT[S.lv];document.getElementById('pro-lv').textContent=`${m.e} ${m.n} — Changer →`;}
+function renderProfile(){
+  updateProAvDisplay();
+  document.getElementById('p-tot').textContent=S.total;document.getElementById('p-sk').textContent=S.streak;document.getElementById('p-xp').textContent=S.xp;
+  const t=S.total||1;
+  const up=(k,ei,fi)=>{const n=S.cats[k];document.getElementById(ei).textContent=n+' défis';document.getElementById(fi).style.width=Math.round((n/t)*100)+'%';};
+  up('rd','c-rd','f-rd');up('mi','c-mi','f-mi');up('sp','c-sp','f-sp');up('co','c-co','f-co');up('cr','c-cr','f-cr');
+}
+
+// ══ PRIVACY ══
+function togglePrivacy(){
+  S.isPrivate = document.getElementById('priv-toggle').checked;
+  document.getElementById('priv-title').textContent = S.isPrivate ? t('priv_private_title') : t('priv_public_title');
+  document.getElementById('priv-s').textContent     = S.isPrivate ? t('priv_private_sub')   : t('priv_public_sub');
+  document.getElementById('priv-lbl').textContent   = S.isPrivate ? t('priv_private_lbl')   : t('priv_public_lbl');
+  showToast(S.isPrivate ? t('priv_toast_on') : t('priv_toast_off'));
+  buildFeed(); // rebuild so private/public filter updates
+}
+
+// ══ EDIT PROFILE ══
+function openEditProfile(){
+  document.getElementById('edit-name').value = S.name;
+  document.getElementById('edit-bio').value = S.bio;
+  document.getElementById('bio-count').textContent = S.bio.length + ' / 120';
+  // Show current avatar
+  if(S.customAvImg){
+    document.getElementById('edit-av-img').src = S.customAvImg;
+    document.getElementById('edit-av-img').style.display='block';
+    document.getElementById('edit-av-emoji').style.display='none';
+  } else {
+    document.getElementById('edit-av-emoji').textContent = S.av;
+    document.getElementById('edit-av-emoji').style.display='flex';
+    document.getElementById('edit-av-img').style.display='none';
+  }
+  // Mark current emoji av
+  document.querySelectorAll('#edit-profile-modal .av-i').forEach(el => {
+    el.classList.toggle('on', el.textContent === S.av);
+  });
+  document.getElementById('edit-bio').addEventListener('input', function(){
+    document.getElementById('bio-count').textContent = this.value.length + ' / 120';
+  });
+  document.getElementById('edit-profile-modal').classList.add('open');
+}
+function closeEditProfile(e){ if(e.target===document.getElementById('edit-profile-modal')) document.getElementById('edit-profile-modal').classList.remove('open'); }
+function saveEditProfile(){
+  const newName = document.getElementById('edit-name').value.trim();
+  const newBio  = document.getElementById('edit-bio').value.trim();
+  if(newName) S.name = newName;
+  S.bio = newBio;
+  // Apply everywhere
+  document.getElementById('pro-name').textContent = S.name;
+  document.getElementById('pro-bio-display').textContent = S.bio || 'Tap pour ajouter une bio…';
+  document.getElementById('top-av').textContent = S.customAvImg ? '' : S.av;
+  if(S.customAvImg){
+    document.getElementById('top-av').style.backgroundImage = `url(${S.customAvImg})`;
+    document.getElementById('top-av').style.backgroundSize = 'cover';
+    document.getElementById('top-av').style.backgroundPosition = 'center';
+  }
+  updateProAvDisplay();
+  document.getElementById('edit-profile-modal').classList.remove('open');
+  showToast(t('toast_saved'));
+}
+function triggerAvatarChange(){ document.getElementById('av-file-input').click(); }
+function onAvatarFile(e){
+  const f = e.target.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = ev => {
+    S.customAvImg = ev.target.result;
+    S.av = '';
+    updateProAvDisplay();
+    // Update edit modal too
+    document.getElementById('edit-av-img').src = ev.target.result;
+    document.getElementById('edit-av-img').style.display='block';
+    document.getElementById('edit-av-emoji').style.display='none';
+    showToast(t('toast_photo'));
+  };
+  r.readAsDataURL(f);
+}
+function updateProAvDisplay(){
+  const bigEl = document.getElementById('pro-av');
+  const imgEl = document.getElementById('pro-av-img');
+  if(S.customAvImg){
+    imgEl.src = S.customAvImg;
+    imgEl.style.display='block';
+    bigEl.style.display='none';
+  } else {
+    bigEl.textContent = S.av;
+    bigEl.style.display='flex';
+    imgEl.style.display='none';
+  }
+  document.getElementById('pro-name').textContent = S.name;
+  document.getElementById('pro-bio-display').textContent = S.bio || 'Tap pour ajouter une bio…';
+}
+
+// ══ LANGUAGE ══
+const LANGS = {
+  fr:{ label:'Français', flag:'🇫🇷' },
+  en:{ label:'English', flag:'🇬🇧' },
+  es:{ label:'Español', flag:'🇪🇸' },
+  de:{ label:'Deutsch', flag:'🇩🇪' },
+  pt:{ label:'Português', flag:'🇧🇷' },
+};
+
+function openLangModal(){
+  document.querySelectorAll('.lang-check').forEach(el => el.style.display='none');
+  const lc = document.getElementById('lc-'+S.lang);
+  if(lc) lc.style.display='block';
+  document.getElementById('lang-modal').classList.add('open');
+}
+function closeLangModal(e){ if(e.target===document.getElementById('lang-modal')) document.getElementById('lang-modal').classList.remove('open'); }
+
+function setLang(code){
+  S.lang = code;
+  document.querySelectorAll('.lang-check').forEach(el => el.style.display='none');
+  const lc = document.getElementById('lc-'+code);
+  if(lc) lc.style.display='block';
+  const lang = LANGS[code];
+  // Close modal then apply
+  setTimeout(()=>{
+    document.getElementById('lang-modal').classList.remove('open');
+    applyLang();
+  }, 500);
+  showToast(lang.flag+' '+lang.label);
+}
+
+function applyLang(){
+  // Nav bottom bar
+  const bn = document.getElementById('bn-defi');
+  if(bn){ document.getElementById('bn-defi').querySelector('span, :last-child') }
+  // Manual text node update on bottom nav
+  document.querySelectorAll('.bn').forEach(btn => {
+    const id = btn.id;
+    if(id==='bn-defi')    btn.lastChild.textContent = t('nav_defi');
+    if(id==='bn-feed')    btn.lastChild.textContent = t('nav_amis');
+    if(id==='bn-profil')  btn.lastChild.textContent = t('nav_profil');
+  });
+  // Today label
+  const tbday = document.getElementById('tb-day');
+  if(tbday) tbday.textContent = t('tb_today');
+  // Video zone
+  const vztitle = document.querySelector('.vz-title');
+  if(vztitle) vztitle.textContent = t('ch_video_title');
+  const vzsub = document.querySelector('.vz-sub');
+  if(vzsub) vzsub.textContent = t('ch_video_sub');
+  // Description label
+  const desclbl = document.querySelector('.desc-lbl');
+  if(desclbl) desclbl.textContent = t('ch_desc_label');
+  const descta = document.getElementById('desc-ta');
+  if(descta) descta.placeholder = t('ch_desc_ph');
+  // Validation items
+  const vi1 = document.getElementById('vi1'); if(vi1) vi1.lastChild.textContent = t('vi_video');
+  const vi2 = document.getElementById('vi2'); if(vi2) vi2.lastChild.textContent = t('vi_ia');
+  const vi3 = document.getElementById('vi3'); if(vi3) vi3.lastChild.textContent = t('vi_selfie');
+  const vi4 = document.getElementById('vi4'); if(vi4) vi4.lastChild.textContent = t('vi_desc');
+  // Submit btn
+  const btnsub = document.getElementById('btn-sub');
+  if(btnsub && !S.done) btnsub.textContent = t('ch_submit');
+  // Feed lock
+  const flt = document.querySelector('.fl-t');  if(flt) flt.textContent = t('feed_lock_title');
+  const fls = document.querySelector('.fl-s');  if(fls) fls.textContent = t('feed_lock_sub');
+  const flb = document.querySelector('.btn-go-dare'); if(flb) flb.textContent = t('feed_lock_btn');
+  // Profile buttons
+  const peb = document.querySelector('.pro-quick-btn');
+  if(peb) peb.textContent = t('pro_edit_btn');
+  const plb = document.querySelectorAll('.pro-quick-btn')[1];
+  if(plb) plb.textContent = t('pro_lang_btn');
+  // Privacy
+  const ptitle = document.getElementById('priv-title');
+  if(ptitle) ptitle.textContent = S.isPrivate ? t('priv_private_title') : t('priv_public_title');
+  const ps = document.getElementById('priv-s');
+  if(ps) ps.textContent = S.isPrivate ? t('priv_private_sub') : t('priv_public_sub');
+  const plbl = document.getElementById('priv-lbl');
+  if(plbl) plbl.textContent = S.isPrivate ? t('priv_private_lbl') : t('priv_public_lbl');
+  // Section headers
+  const secc = document.querySelector('.sec-h');
+  if(secc) secc.textContent = t('sec_cats');
+  const secs = document.querySelectorAll('.sec-h')[1];
+  if(secs) secs.textContent = t('sec_badges');
+  // Settings buttons
+  const setbtns = document.querySelectorAll('.set-btn');
+  const setKeys = ['set_edit','set_intensity','set_lang','set_notif','set_logout'];
+  setbtns.forEach((btn,i)=>{ if(setKeys[i]) btn.textContent = t(setKeys[i]); });
+  // Intensity modal
+  const mot = document.querySelector('.mo-t'); if(mot) mot.textContent = t('mo_int_title');
+  const mos = document.querySelector('.mo-s'); if(mos) mos.textContent = t('mo_int_sub');
+  const mosave = document.getElementById('mo-save'); if(mosave) mosave.textContent = t('mo_save');
+  // Onboarding continue button
+  const obcont = document.getElementById('btn-cont'); if(obcont) obcont.textContent = t('int_continue');
+  // Bio placeholder
+  const biod = document.getElementById('pro-bio-display');
+  if(biod && !S.bio) biod.textContent = t('pro_bio_ph');
+  // Streak labels
+  const sklbl = document.querySelector('.wid-lbl'); if(sklbl) sklbl.textContent = t('streak_label');
+  // Days
+  const dayEls = document.querySelectorAll('.dy-l');
+  const days = t('days');
+  dayEls.forEach((el,i)=>{ if(days[i]) el.textContent = days[i]; });
+  // Rebuild feed and challenge text
+  renderCh();
+  buildFeed();
+}
+
+// ══ FEED ══
+function buildFeed(){
+  const locked=!S.feedUnlocked;
+  document.getElementById('feed-lock-view').style.display=locked?'block':'none';
+  document.getElementById('feed-open-view').style.display=locked?'none':'block';
+  if(locked)return;
+  document.getElementById('feed-list').innerHTML=FEED_SEED.filter(f=>{
+    if(!f.priv) return true;  // public post → always show
+    if(f.own) return true;    // your own post → always show
+    return S.friends.includes(f.n); // private post → only if they're a friend
+  }).map((f,i)=>`
+    <div class="post" style="animation-delay:${i*.06}s">
+      <div class="post-hd">
+        <div class="post-av" style="background:${f.bg};color:#fff">${f.av}</div>
+        <div><div style="display:flex;align-items:center"><div class="post-n">${f.n}</div>${f.priv?'<div class="post-priv">🔒 Privé</div>':''}
+        ${(f.priv&&S.friends.includes(f.n))?'<div style="font-size:9px;color:var(--mu);margin-top:2px">ami(e)</div>':''}</div><div class="post-t">il y a ${f.time}</div></div>
+        <div style="margin-left:auto;font-size:11px;color:var(--mu)">${f.cat||'Défi'}</div>
+      </div>
+      <div class="post-ch"><b>Défi :</b> ${f.ch}</div>
+      <div class="post-media">
+        ${f.vidBlob?`<video style="width:100%;height:100%;object-fit:cover;display:block" src="${URL.createObjectURL(f.vidBlob)}" autoplay muted loop playsinline></video>`:`<div class="post-ph-em">${f.em||'🎯'}</div>`}
+        ${f.selfData?`<img src="${f.selfData}" style="position:absolute;top:10px;left:10px;width:68px;height:84px;border-radius:10px;border:2.5px solid rgba(0,0,0,.6);object-fit:cover">`:`<div class="post-selfie">${f.av}</div>`}
+        ${f.aiOk?'<div class="post-ai-badge">✓ IA validé</div>':''}
+      </div>
+      <div class="post-cap">"${f.cap}"</div>
+      <div class="post-acts">
+        <button class="pa fire" onclick="toggleFire(this,${i})">🔥 <span>${f.fires}</span></button>
+        <button class="pa" onclick="showToast('Réponses bientôt !')">💬</button>
+        <div class="post-stars" id="ps-${i}" onmouseenter="hoverStars(this,null)" onmouseleave="hoverStars(this,-1)">
+          <span class="post-star" onmouseenter="hoverStars(document.getElementById('ps-${i}'),0)" onclick="openStarModal(${i},'${f.n}')">⭐</span>
+          <span class="post-star" onmouseenter="hoverStars(document.getElementById('ps-${i}'),1)" onclick="openStarModal(${i},'${f.n}')">⭐</span>
+          <span class="post-star" onmouseenter="hoverStars(document.getElementById('ps-${i}'),2)" onclick="openStarModal(${i},'${f.n}')">⭐</span>
+          <span class="post-star" onmouseenter="hoverStars(document.getElementById('ps-${i}'),3)" onclick="openStarModal(${i},'${f.n}')">⭐</span>
+          <span class="post-star" onmouseenter="hoverStars(document.getElementById('ps-${i}'),4)" onclick="openStarModal(${i},'${f.n}')">⭐</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+function hoverStars(wrap,upTo){if(!wrap)return;const ss=wrap.querySelectorAll('.post-star');ss.forEach((s,i)=>s.style.filter=i<=upTo?'none':'grayscale(1) brightness(.4)');}
+function toggleFire(btn,i){const sp=btn.querySelector('span');const fi=FEED_SEED.filter(f=>!f.priv||f.own)[i];if(btn.dataset.f){fi.fires--;delete btn.dataset.f;}else{fi.fires++;btn.dataset.f='1';showToast(t('toast_fire'));}sp.textContent=fi.fires;}
+
+// ══ STAR RATING MODAL ══
+const SM_LABELS=['','Nul 😬','Bof 😐','Pas mal 🙂','Très bien 😊','Incroyable 🔥'];
+let smCurrentI=-1,smCurrentR=0;
+function openStarModal(i,name){
+  smCurrentI=i;smCurrentR=0;
+  document.getElementById('sm-t').textContent=`Note le défi de ${name}`;
+  document.getElementById('sm-label').textContent='';
+  document.getElementById('sm-form').style.display='block';
+  document.getElementById('sm-thanks').style.display='none';
+  document.querySelectorAll('.sm-star').forEach(s=>{s.classList.remove('on');s.style.filter='grayscale(1) brightness(.35)';});
+  document.getElementById('star-modal').classList.add('open');
+}
+function closeStarModal(e){if(e.target===document.getElementById('star-modal'))document.getElementById('star-modal').classList.remove('open');}
+document.addEventListener('DOMContentLoaded',()=>{
+  document.querySelectorAll('.sm-star').forEach(s=>{
+    s.addEventListener('mouseenter',()=>{const v=parseInt(s.dataset.v);document.querySelectorAll('.sm-star').forEach((st,i)=>{st.style.filter=i<v?'none':'grayscale(1) brightness(.35)';});document.getElementById('sm-label').textContent=SM_LABELS[v];});
+    s.addEventListener('mouseleave',()=>{document.querySelectorAll('.sm-star').forEach((st,i)=>{st.style.filter=i<smCurrentR?'none':'grayscale(1) brightness(.35)';});document.getElementById('sm-label').textContent=smCurrentR?SM_LABELS[smCurrentR]:'';});
+    s.addEventListener('click',()=>{smCurrentR=parseInt(s.dataset.v);document.querySelectorAll('.sm-star').forEach((st,i)=>{st.classList.toggle('on',i<smCurrentR);st.style.filter=i<smCurrentR?'none':'grayscale(1) brightness(.35)';});document.getElementById('sm-label').textContent=SM_LABELS[smCurrentR];
+      // update post stars
+      if(smCurrentI>=0){const wrap=document.getElementById('ps-'+smCurrentI);if(wrap){const ps=wrap.querySelectorAll('.post-star');ps.forEach((p,i)=>{p.classList.toggle('lit',i<smCurrentR);p.style.filter=i<smCurrentR?'none':'grayscale(1) brightness(.4)';});}}
+      setTimeout(()=>{document.getElementById('sm-form').style.display='none';document.getElementById('sm-thanks').style.display='block';setTimeout(()=>document.getElementById('star-modal').classList.remove('open'),1400);},300);
+    });
+  });
+});
+
+// ══ NAV ══
+function goPage(n){document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.bn').forEach(b=>b.classList.remove('on'));document.getElementById('page-'+n).classList.add('on');document.getElementById('bn-'+n).classList.add('on');if(n==='profil')renderProfile();if(n==='feed')buildFeed();}
+
+// ══ INTENSITY MODAL ══
+let moPick=null;
+function openMo(){moPick=null;document.querySelectorAll('#mo-cards .lv').forEach(c=>{c.classList.remove('sel');c.querySelector('.lv-check').textContent='';if(parseInt(c.dataset.lv)===S.lv){c.classList.add('sel');c.querySelector('.lv-check').textContent='✓';}});document.getElementById('mo-save').disabled=false;document.getElementById('mo-ov').classList.add('open');}
+function closeMo(e){if(e.target===document.getElementById('mo-ov'))document.getElementById('mo-ov').classList.remove('open');}
+function moLv(el){document.querySelectorAll('#mo-cards .lv').forEach(c=>{c.classList.remove('sel');c.querySelector('.lv-check').textContent='';});el.classList.add('sel');el.querySelector('.lv-check').textContent='✓';moPick=parseInt(el.dataset.lv);document.getElementById('mo-save').disabled=false;}
+function saveMo(){if(moPick){S.lv=moPick;if(!S.done)renderCh();updateLvChip();showToast(`${INT[S.lv].e} ${INT[S.lv].n}`);}document.getElementById('mo-ov').classList.remove('open');}
+
+// ══ TRANSITIONS ══
+function go(f,t){const a=document.getElementById(f),b=document.getElementById(t);a.classList.add('out');setTimeout(()=>{a.classList.add('off');a.classList.remove('out');b.classList.remove('off');},400);}
+function fxd(id,disp){document.getElementById(id).style.display=disp;}
+
+// ══ LOGOUT ══
+function doLogout(){
+  if(!confirm(t('logout_confirm'))) return;
+  if(S.mediaStream)S.mediaStream.getTracks().forEach(t=>t.stop());
+  const keepLang = S.lang;
+  Object.assign(S,{lv:2,name:'Joueur',av:'🦊',bio:'',customAvImg:'',lang:keepLang,streak:0,record:0,xp:0,total:0,cats:{rd:0,mi:0,sp:0,co:0,cr:0},isPrivate:false,done:false,timerSecs:14400,cIdx:0,videoBlob:null,selfieData:null,descOk:false,aiOk:false,feedUnlocked:false,mediaStream:null,mediaRecorder:null,recChunks:[],recSecs:0,friends:['Sarah','Max','Julie','Thomas','Emma']});
+  document.getElementById('ch-card').style.display='';
+  document.getElementById('done-card').classList.remove('show');
+  retakeVideo();
+  document.getElementById('desc-ta').value='';document.getElementById('desc-cnt').textContent='0 / 280';document.getElementById('desc-cnt').classList.remove('ok');
+  document.getElementById('btn-sub').disabled=true;document.getElementById('btn-sub').classList.remove('rdy');
+  ['vi1','vi2','vi3','vi4'].forEach(id=>document.getElementById(id).classList.remove('ok'));
+  document.getElementById('vs-pct').textContent='0%';document.getElementById('vs-pct').classList.remove('ok');
+  document.getElementById('d6').className='dd td';document.getElementById('d6').textContent='';
+  go('app','auth');goPage('defi');
+  setTimeout(showNt,5000);
+}
+
+// ══ TOAST ══
+let _tt;function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('on'),2800);}
+</script>
+</body>
+</html>
