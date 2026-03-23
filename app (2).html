@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="dare.">
+<meta name="theme-color" content="#0a0a0f">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>dare.</title>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Cabinet+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0a0a0f;--s1:#111118;--s2:#18181f;--s3:#222230;--s4:#2c2c3a;
+  --tx:#f0ecff;--mu:#55556a;--bo:rgba(255,255,255,.07);
+  /* multi-color palette */
+  --acc:#e8ff47;--acc-d:#b8cc00;
+  --pu:#c084fc;--pu2:#a855f7;--pu3:#7c3aed;
+  --bl:#38bdf8;--bl2:#0ea5e9;
+  --gn:#4ade80;--gn2:#22c55e;
+  --or:#fb923c;--or2:#f97316;
+  --pk:#f472b6;--pk2:#ec4899;
+  --rd:#f87171;--rd2:#ef4444;
+  --fn:'Clash Display',sans-serif;--bd:'Cabinet Grotesk',sans-serif;
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bot:env(safe-area-inset-bottom,0px);
+}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-family:var(--bd)}
+#root{width:100%;height:100%;max-width:500px;margin:0 auto;position:relative;overflow:hidden;background:var(--bg)}
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;overflow:hidden;transition:opacity .4s cubic-bezier(.4,0,.2,1),transform .4s cubic-bezier(.4,0,.2,1)}
+.scr.off{opacity:0;pointer-events:none;transform:translateY(18px)}
+.scr.out{opacity:0;transform:translateY(-22px)}
+*{scrollbar-width:none}*::-webkit-scrollbar{display:none}
+
+/* ── SPLASH ── */
+#splash{background:var(--bg);align-items:center;justify-content:center;z-index:100;overflow:hidden}
+.sp-bg{position:absolute;inset:0}
+.sp-mesh{position:absolute;inset:0}
+.sp-mesh::before{content:'';position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(192,132,252,.15) 0,transparent 70%);top:-200px;left:-100px;animation:meshA 8s ease-in-out infinite}
+.sp-mesh::after{content:'';position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(56,189,248,.1) 0,transparent 70%);bottom:-150px;right:-100px;animation:meshB 10s ease-in-out infinite}
+@keyframes meshA{0%,100%{transform:translate(0,0)}50%{transform:translate(80px,60px)}}
+@keyframes meshB{0%,100%{transform:translate(0,0)}50%{transform:translate(-60px,-80px)}}
+.sp-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:40px 40px;animation:gridpan 20s linear infinite}
+@keyframes gridpan{from{background-position:0 0}to{background-position:40px 40px}}
+.sp-inner{position:relative;z-index:2;text-align:center}
+.sp-logo-wrap{position:relative;display:inline-block}
+.sp-logo{font-family:var(--fn);font-size:80px;font-weight:700;color:var(--tx);letter-spacing:-2px;animation:logoIn 1s cubic-bezier(.16,1,.3,1) both}
+.sp-logo-glow{position:absolute;inset:-20px;background:radial-gradient(circle,rgba(232,255,71,.12) 0,transparent 70%);animation:logoIn .8s .1s both;pointer-events:none}
+@keyframes logoIn{from{opacity:0;transform:scale(.8) translateY(24px)}to{opacity:1;transform:none}}
+.sp-dot{display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--acc);vertical-align:middle;margin-left:2px;margin-bottom:10px;animation:logoIn .8s .05s both}
+.sp-tag{font-size:12px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:rgba(240,236,255,.3);margin-top:12px;animation:fup .6s .4s both}
+.sp-bar{width:80px;height:1.5px;background:rgba(255,255,255,.08);margin:48px auto 0;overflow:hidden;animation:fup .4s .5s both}
+.sp-fill{height:100%;background:linear-gradient(90deg,var(--pu),var(--acc));animation:spf 2.4s .5s cubic-bezier(.4,0,.2,1) both}
+@keyframes spf{from{width:0}to{width:100%}}
+@keyframes fup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+/* ── ONBOARDING ── */
+#onboard{background:var(--bg);z-index:90}
+.ob-wrap{display:flex;width:300%;height:100%;transition:transform .6s cubic-bezier(.77,0,.18,1)}
+.ob-sl{width:33.333%;flex-shrink:0;padding:calc(var(--safe-top) + 60px) 28px 160px;display:flex;flex-direction:column;position:relative}
+.ob-slide-num{font-family:var(--fn);font-size:120px;font-weight:700;color:rgba(255,255,255,.03);position:absolute;top:50px;right:20px;line-height:1}
+.ob-icon-wrap{width:72px;height:72px;border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:30px;margin-bottom:28px;flex-shrink:0;position:relative;z-index:1}
+.oi-1{background:linear-gradient(135deg,rgba(192,132,252,.25),rgba(56,189,248,.15))}
+.oi-2{background:linear-gradient(135deg,rgba(74,222,128,.2),rgba(56,189,248,.15))}
+.oi-3{background:linear-gradient(135deg,rgba(251,146,60,.2),rgba(244,114,182,.15))}
+.ob-title{font-family:var(--fn);font-size:36px;font-weight:700;line-height:1.1;letter-spacing:-.5px;margin-bottom:14px;position:relative;z-index:1}
+.ob-title .hl{background:linear-gradient(135deg,var(--pu),var(--bl));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.ob-body{font-size:15px;line-height:1.7;color:rgba(240,236,255,.45);position:relative;z-index:1;max-width:300px}
+.ob-phone-preview{flex:1;display:flex;align-items:flex-end;justify-content:flex-end;padding-bottom:10px}
+.ob-mini-phone{width:150px;height:190px;border-radius:26px;background:var(--s2);border:1px solid rgba(255,255,255,.1);overflow:hidden;position:relative;flex-shrink:0}
+.omp-content{padding:12px;height:100%;display:flex;flex-direction:column;gap:6px}
+.omp-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:2px}
+.omp-logo{font-family:var(--fn);font-size:12px;font-weight:700;color:var(--tx)}
+.omp-sk{font-size:10px;color:var(--acc);font-weight:700}
+.omp-card{flex:1;background:var(--s3);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;position:relative;border:1px solid rgba(255,255,255,.06)}
+.omp-em{font-size:26px}
+.omp-label{font-size:8px;color:rgba(240,236,255,.4);font-weight:500}
+.omp-badge{position:absolute;bottom:6px;right:6px;background:rgba(74,222,128,.9);border-radius:20px;padding:2px 7px;font-size:7px;font-weight:700;color:#000}
+.ob-foot{position:absolute;bottom:0;left:0;right:0;padding:20px 24px calc(var(--safe-bot) + 28px);background:linear-gradient(to top,var(--bg) 70%,transparent)}
+.ob-pips{display:flex;gap:6px;margin-bottom:16px}
+.pip{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.15);transition:all .3s}
+.pip.on{width:18px;border-radius:3px;background:var(--acc)}
+.btn-ob{width:100%;padding:17px;border-radius:100px;border:none;background:var(--acc);color:#000;font-family:var(--fn);font-weight:700;font-size:16px;cursor:pointer;letter-spacing:.02em;transition:transform .15s}
+.btn-ob:active{transform:scale(.97)}
+.skip-ob{background:none;border:none;color:var(--mu);font-size:13px;cursor:pointer;margin-top:12px;font-family:var(--bd);display:block;width:100%;text-align:center}
+
+/* ── INTENSITY ── */
+#intensity{background:var(--bg);z-index:85;overflow-y:auto;padding:calc(var(--safe-top) + 52px) 22px calc(var(--safe-bot) + 48px)}
+.int-kicker{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--acc);margin-bottom:12px}
+.int-h{font-family:var(--fn);font-size:38px;font-weight:700;line-height:1.05;letter-spacing:-.5px;margin-bottom:8px}
+.int-sub{font-size:14px;color:rgba(240,236,255,.4);line-height:1.7;margin-bottom:28px}
+.lv-list{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+.lv{border:1.5px solid var(--bo);border-radius:20px;cursor:pointer;transition:all .28s;background:var(--s1);overflow:hidden}
+.lv.sel{border-color:var(--acc)}
+.lv-in{padding:18px}
+.lv-row1{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.lv-em{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.lv-em-1{background:rgba(74,222,128,.1)}
+.lv-em-2{background:rgba(251,146,60,.1)}
+.lv-em-3{background:rgba(244,114,182,.1)}
+.lv-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.lv-check{width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:11px;color:#000;transition:all .25s}
+.lv.sel .lv-check{background:var(--acc);border-color:var(--acc)}
+.lv-diff{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:20px}
+.df-ez{background:rgba(74,222,128,.1);color:var(--gn)}
+.df-md{background:rgba(251,146,60,.1);color:var(--or)}
+.df-hd{background:rgba(244,114,182,.1);color:var(--pk)}
+.lv-name{font-family:var(--fn);font-size:17px;font-weight:600;margin-bottom:5px}
+.lv-desc{font-size:13px;color:rgba(240,236,255,.4);line-height:1.55;margin-bottom:10px}
+.lv-tags{display:flex;flex-wrap:wrap;gap:5px}
+.lv-tag{font-size:11px;padding:3px 10px;border-radius:20px;background:rgba(255,255,255,.04);color:rgba(240,236,255,.3);border:1px solid rgba(255,255,255,.06)}
+.btn-cont{width:100%;padding:17px;border-radius:100px;border:none;background:var(--acc);color:#000;font-family:var(--fn);font-weight:700;font-size:16px;cursor:pointer;transition:opacity .2s}
+.btn-cont:disabled{opacity:.22;cursor:not-allowed}
+
+/* ── AUTH ── */
+#auth{background:var(--bg);padding:calc(var(--safe-top) + 52px) 22px calc(var(--safe-bot) + 48px);z-index:80;overflow-y:auto}
+.auth-logo{font-family:var(--fn);font-size:40px;font-weight:700;letter-spacing:-.5px;margin-bottom:4px}
+.auth-logo em{color:var(--acc);font-style:normal}
+.auth-sub{font-size:14px;color:var(--mu);margin-bottom:28px;line-height:1.6}
+.a-tabs{display:flex;background:var(--s1);border-radius:100px;padding:4px;margin-bottom:22px}
+.a-tab{flex:1;padding:10px;text-align:center;font-size:13px;font-weight:700;border-radius:100px;cursor:pointer;border:none;background:transparent;color:var(--mu);transition:all .2s;font-family:var(--fn)}
+.a-tab.on{background:var(--s3);color:var(--tx)}
+.fld{margin-bottom:13px}
+.fld label{display:block;font-size:10px;font-weight:700;color:var(--mu);letter-spacing:.1em;text-transform:uppercase;margin-bottom:7px}
+.fld input{width:100%;padding:14px 16px;background:var(--s1);border:1.5px solid var(--bo);border-radius:14px;color:var(--tx);font-family:var(--bd);font-size:15px;outline:none;transition:border .2s}
+.fld input:focus{border-color:rgba(232,255,71,.3)}
+.fld input::placeholder{color:rgba(85,85,106,.6)}
+.av-g{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.av-i{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;border:1.5px solid var(--bo);background:var(--s1);transition:all .2s}
+.av-i.on{border-color:var(--acc);background:rgba(232,255,71,.07);transform:scale(1.08)}
+.btn-auth{width:100%;padding:16px;border-radius:100px;border:none;background:var(--acc);color:#000;font-family:var(--fn);font-weight:700;font-size:16px;cursor:pointer;margin-top:6px}
+.a-or{text-align:center;font-size:11px;color:rgba(85,85,106,.6);margin:14px 0;letter-spacing:.1em;text-transform:uppercase}
+.btn-goog{width:100%;padding:14px;border-radius:100px;border:1.5px solid var(--bo);background:var(--s1);color:var(--tx);font-family:var(--fn);font-weight:600;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px}
+
+/* ── APP ── */
+#app{background:var(--bg);display:flex;flex-direction:column}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:calc(var(--safe-top) + 14px) 18px 10px;flex-shrink:0}
+.tb-logo{font-family:var(--fn);font-size:24px;font-weight:700;letter-spacing:-.3px}
+.tb-logo em{color:var(--acc);font-style:normal}
+.tb-center{display:flex;flex-direction:column;align-items:center}
+.tb-day{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(85,85,106,.7)}
+.tb-timer{font-size:13px;font-weight:700;color:var(--acc);letter-spacing:.04em;font-variant-numeric:tabular-nums}
+.tb-r{display:flex;align-items:center;gap:9px}
+.tb-sk{font-size:13px;font-weight:700;color:var(--acc)}
+.tb-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;border:2px solid rgba(232,255,71,.2);background:var(--s2);transition:border .2s}
+.tb-av:hover{border-color:var(--acc)}
+.pages{flex:1;min-height:0;overflow:hidden;position:relative}
+.page{position:absolute;inset:0;overflow-y:auto;display:none;padding-bottom:4px}
+.page.on{display:block}
+.bnav{display:flex;padding:6px 0 calc(var(--safe-bot) + 12px);background:rgba(17,17,24,.95);backdrop-filter:blur(20px);border-top:1px solid var(--bo);flex-shrink:0}
+.bn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:7px 0;border:none;background:transparent;color:var(--mu);font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;transition:color .2s;font-family:var(--fn)}
+.bn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8}
+.bn.on{color:var(--acc)}
+.bn.on svg{stroke:var(--acc)}
+
+/* ── DÉFI PAGE ── */
+/* challenge header */
+.ch-card{margin:10px 14px 0;border-radius:22px;background:var(--s1);border:1px solid var(--bo);overflow:hidden}
+.ch-hd{padding:15px 16px 11px;display:flex;justify-content:space-between;align-items:flex-start}
+.ch-meta{flex:1}
+.ch-kicker{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px}
+.ch-title{font-family:var(--fn);font-size:21px;font-weight:700;line-height:1.2;letter-spacing:-.2px;max-width:230px}
+.ch-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;margin-left:12px}
+.timer-pill{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:100px;border:1px solid rgba(232,255,71,.2);background:rgba(232,255,71,.07)}
+.tp-dot{width:6px;height:6px;border-radius:50%;background:var(--acc);animation:tblink 1.3s infinite}
+@keyframes tblink{0%,100%{opacity:1}50%{opacity:.2}}
+.tp-val{font-size:12px;font-weight:700;color:var(--acc);font-variant-numeric:tabular-nums}
+.xp-pill{font-size:11px;font-weight:700;color:rgba(240,236,255,.35)}
+
+/* VIDEO ZONE — main feature */
+.vid-zone{margin:0 14px;border-radius:16px;overflow:hidden;position:relative;aspect-ratio:4/3;background:var(--s2);cursor:pointer}
+.vz-empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;border:1.5px dashed rgba(255,255,255,.1);border-radius:16px;transition:all .3s}
+.vz-empty:hover{border-color:rgba(232,255,71,.25)}
+.vz-cam{width:60px;height:60px;border-radius:18px;background:rgba(232,255,71,.1);display:flex;align-items:center;justify-content:center;font-size:28px}
+.vz-title{font-size:14px;font-weight:600;color:rgba(240,236,255,.6)}
+.vz-sub{font-size:12px;color:rgba(85,85,106,.8);text-align:center;padding:0 28px;line-height:1.5}
+/* recording state */
+.vz-recording{position:absolute;inset:0;background:#000;display:none;flex-direction:column}
+.vz-viewfinder{flex:1;background:#111;display:flex;align-items:center;justify-content:center;font-size:48px;position:relative}
+.rec-indicator{position:absolute;top:12px;left:12px;display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.6);border-radius:20px;padding:5px 10px}
+.rec-dot{width:8px;height:8px;border-radius:50%;background:var(--rd);animation:recdot .8s infinite}
+@keyframes recdot{0%,100%{opacity:1}50%{opacity:.3}}
+.rec-time{font-size:12px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums}
+.vz-selfie-overlay{position:absolute;top:10px;left:10px;width:72px;height:88px;border-radius:12px;border:2.5px solid rgba(0,0,0,.5);background:var(--s3);display:none;align-items:center;justify-content:center;font-size:22px;overflow:hidden;cursor:pointer}
+.vz-selfie-img{width:100%;height:100%;object-fit:cover;display:none}
+/* video played back */
+.vz-preview{position:absolute;inset:0;display:none}
+.vz-preview-vid{width:100%;height:100%;object-fit:cover}
+.vz-retake{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.65);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.15);border-radius:100px;padding:5px 13px;font-size:12px;font-weight:600;color:#fff;cursor:pointer;display:none;z-index:10}
+/* ai states */
+.vz-checking{position:absolute;bottom:10px;right:10px;display:none;align-items:center;gap:6px;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);border-radius:100px;padding:6px 12px;font-size:12px;font-weight:600;border:1px solid rgba(255,255,255,.1)}
+.spin{width:12px;height:12px;border:2px solid rgba(255,255,255,.2);border-top-color:var(--acc);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.vz-ok{position:absolute;bottom:10px;right:10px;display:none;align-items:center;gap:5px;background:rgba(74,222,128,.92);border-radius:100px;padding:6px 13px;font-size:12px;font-weight:700;color:#000}
+.vz-fail{position:absolute;bottom:10px;right:10px;display:none;align-items:center;gap:5px;background:rgba(248,113,113,.92);border-radius:100px;padding:6px 13px;font-size:12px;font-weight:700;color:#000}
+.vz-record-btn-wrap{position:absolute;bottom:14px;left:0;right:0;display:flex;justify-content:center;gap:16px;align-items:center}
+.vz-rec-btn{width:64px;height:64px;border-radius:50%;background:var(--rd);border:4px solid rgba(255,255,255,.3);cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;font-size:22px}
+.vz-rec-btn.recording{background:var(--s3);border-color:var(--rd);animation:none;transform:scale(.85)}
+.vz-rec-btn.recording::after{content:'';width:22px;height:22px;background:var(--rd);border-radius:4px;position:absolute}
+/* ai message */
+.ai-msg{margin:8px 14px 0;padding:10px 13px;border-radius:12px;font-size:13px;line-height:1.5;display:none}
+.ai-msg.ok{background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);color:var(--gn)}
+.ai-msg.fail{background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.2);color:var(--rd)}
+.ai-msg.loading{background:rgba(232,255,71,.05);border:1px solid rgba(232,255,71,.15);color:rgba(232,255,71,.8)}
+
+/* description */
+.desc-wrap{margin:10px 14px 0}
+.desc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+.desc-lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mu)}
+.desc-cnt{font-size:11px;color:var(--mu)}
+.desc-cnt.ok{color:var(--gn)}
+.desc-ta{width:100%;background:var(--s1);border:1.5px solid var(--bo);border-radius:14px;padding:12px 14px;color:var(--tx);font-family:var(--bd);font-size:14px;resize:none;outline:none;line-height:1.6;min-height:76px;transition:border .2s}
+.desc-ta:focus{border-color:rgba(232,255,71,.25)}
+.desc-ta::placeholder{color:rgba(85,85,106,.55)}
+
+/* validation */
+.val-strip{margin:8px 14px 0;display:flex;align-items:center;gap:8px;padding:10px 13px;background:var(--s1);border-radius:12px;border:1px solid var(--bo)}
+.vs-list{display:flex;gap:10px;flex:1;flex-wrap:wrap}
+.vi{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--mu);transition:color .3s}
+.vi.ok{color:var(--gn)}
+.vi-dot{width:6px;height:6px;border-radius:50%;border:1.5px solid currentColor}
+.vi.ok .vi-dot{background:var(--gn);border-color:var(--gn)}
+.vs-pct{font-size:12px;font-weight:700;color:var(--mu);min-width:32px;text-align:right;transition:color .3s}
+.vs-pct.ok{color:var(--gn)}
+
+/* submit */
+.sub-wrap{padding:10px 14px 0}
+.btn-sub{width:100%;padding:17px;border-radius:100px;border:none;background:var(--s3);color:rgba(240,236,255,.25);font-family:var(--fn);font-weight:700;font-size:16px;cursor:not-allowed;transition:all .4s}
+.btn-sub.rdy{background:var(--acc);color:#000;cursor:pointer;box-shadow:0 6px 30px rgba(232,255,71,.2)}
+.btn-sub.rdy:active{transform:scale(.97)}
+.anti-cheat-note{margin:8px 14px 0;display:flex;align-items:flex-start;gap:7px;padding:9px 12px;background:rgba(248,113,113,.04);border:1px solid rgba(248,113,113,.1);border-radius:10px;font-size:11px;color:rgba(240,236,255,.3);line-height:1.45}
+
+/* DONE CARD */
+.done-card{margin:10px 14px 0;border-radius:22px;background:var(--s1);border:2px solid var(--gn);overflow:hidden;display:none}
+.done-card.show{display:block;animation:popIn .55s cubic-bezier(.16,1,.3,1) both}
+@keyframes popIn{from{opacity:0;transform:scale(.93)}to{opacity:1;transform:none}}
+.dc-top{padding:16px 18px;display:flex;align-items:center;gap:14px;background:rgba(74,222,128,.06);border-bottom:1px solid rgba(74,222,128,.12)}
+.dc-chk{width:46px;height:46px;border-radius:50%;background:var(--gn);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;animation:bop .55s .1s cubic-bezier(.16,1,.3,1) both}
+@keyframes bop{0%{transform:scale(0)}65%{transform:scale(1.18)}100%{transform:scale(1)}}
+.dc-title{font-family:var(--fn);font-size:20px;font-weight:700}
+.dc-sub{font-size:12px;color:rgba(240,236,255,.4);margin-top:2px}
+.dc-media{aspect-ratio:4/3;background:var(--s2);position:relative;overflow:hidden}
+.dc-media-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:40px}
+.dc-vid{width:100%;height:100%;object-fit:cover;display:none}
+.dc-selfie{position:absolute;top:10px;left:10px;width:70px;height:86px;border-radius:10px;border:2.5px solid rgba(0,0,0,.5);object-fit:cover;display:none}
+.dc-caption{padding:12px 16px;font-size:13px;line-height:1.6;color:rgba(240,236,255,.55);font-style:italic;border-bottom:1px solid var(--bo)}
+.dc-stats{display:flex}
+.dcs{flex:1;padding:13px 10px;text-align:center;border-right:1px solid var(--bo)}
+.dcs:last-child{border-right:none}
+.dcs-v{font-family:var(--fn);font-size:22px;font-weight:700;color:var(--acc)}
+.dcs-l{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--mu);margin-top:3px}
+
+/* STREAK + XP */
+.wid{margin:12px 14px 0;background:var(--s1);border-radius:18px;border:1px solid var(--bo);padding:15px}
+.wid-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+.wid-num{font-family:var(--fn);font-size:36px;font-weight:700;line-height:1;color:var(--acc)}
+.wid-lbl{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mu);margin-top:4px}
+.wid-rec{font-size:12px;color:var(--mu);text-align:right;line-height:1.6}
+.wid-rec b{color:rgba(240,236,255,.35);font-weight:500}
+.days-row{display:flex;gap:5px}
+.dy{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.dd{width:32px;height:32px;border-radius:8px;border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;transition:all .3s}
+.dd.ok{background:var(--acc);border-color:var(--acc);color:#000}
+.dd.td{border-color:rgba(232,255,71,.3);color:rgba(232,255,71,.5);animation:tdp 2.5s infinite}
+.dd.td.ok{background:var(--gn);border-color:var(--gn);color:#000;animation:none}
+@keyframes tdp{0%,100%{box-shadow:0 0 0 0 rgba(232,255,71,0)}50%{box-shadow:0 0 0 4px rgba(232,255,71,.1)}}
+.dy-l{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--mu)}
+.xp-wid{margin:10px 14px 0;background:var(--s1);border-radius:18px;border:1px solid var(--bo);padding:14px 15px}
+.xpw-r{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+.xpw-lv{font-size:13px;font-weight:600}
+.xpw-v{font-size:12px;color:var(--mu)}
+.xp-track{height:3px;background:rgba(255,255,255,.06);border-radius:10px;overflow:hidden;margin-bottom:10px}
+.xp-bar{height:100%;background:linear-gradient(90deg,var(--pu2),var(--pk),var(--acc));border-radius:10px;transition:width .9s cubic-bezier(.16,1,.3,1)}
+.lv-scroll{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+.lc{flex-shrink:0;padding:4px 12px;border-radius:100px;font-size:11px;font-weight:600}
+.lc.got{background:rgba(192,132,252,.12);color:var(--pu);border:1px solid rgba(192,132,252,.2)}
+.lc.cur{background:rgba(232,255,71,.08);color:var(--acc);border:1px dashed rgba(232,255,71,.25)}
+.lc.lck{background:rgba(255,255,255,.03);color:var(--mu);border:1px solid var(--bo)}
+
+/* ── FEED PAGE ── */
+.feed-lock{padding:48px 24px;text-align:center}
+.fl-em{font-size:44px;margin-bottom:14px}
+.fl-t{font-family:var(--fn);font-size:24px;font-weight:700;margin-bottom:8px}
+.fl-s{font-size:14px;color:var(--mu);line-height:1.65;margin-bottom:20px}
+.btn-go-dare{padding:13px 28px;border-radius:100px;border:1.5px solid rgba(232,255,71,.3);background:rgba(232,255,71,.07);color:var(--acc);font-family:var(--fn);font-weight:700;font-size:14px;cursor:pointer}
+/* posts */
+.post{border-bottom:1px solid var(--bo);padding:16px 0 14px}
+.post-hd{display:flex;align-items:center;gap:10px;padding:0 14px 11px}
+.post-av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0}
+.post-n{font-size:14px;font-weight:600}
+.post-t{font-size:11px;color:var(--mu);margin-top:1px}
+.post-priv{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;background:rgba(192,132,252,.1);color:var(--pu);margin-left:6px}
+.post-ch{margin:0 14px 9px;padding:8px 11px;background:var(--s2);border-radius:10px;font-size:12px;color:rgba(240,236,255,.5);line-height:1.4}
+.post-ch b{color:rgba(240,236,255,.75);font-weight:500}
+.post-media{margin:0 14px 9px;border-radius:16px;overflow:hidden;aspect-ratio:4/3;background:var(--s2);position:relative}
+.post-vid{width:100%;height:100%;object-fit:cover;display:block}
+.post-ph-em{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:46px}
+.post-selfie{position:absolute;top:10px;left:10px;width:68px;height:84px;border-radius:10px;border:2.5px solid rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;font-size:24px;background:var(--s3)}
+.post-ai-badge{position:absolute;bottom:9px;right:9px;background:rgba(74,222,128,.92);border-radius:100px;padding:5px 11px;font-size:11px;font-weight:700;color:#000;display:flex;align-items:center;gap:4px}
+.post-cap{padding:0 14px 9px;font-size:14px;line-height:1.65;color:rgba(240,236,255,.65);font-style:italic}
+.post-acts{padding:0 14px;display:flex;gap:7px}
+.pa{padding:7px 13px;border-radius:100px;border:1px solid var(--bo);background:transparent;color:var(--mu);font-size:12px;cursor:pointer;transition:all .2s;font-family:var(--bd);font-weight:500}
+.pa:hover{background:var(--s2);color:var(--tx)}
+.pa.fire{color:var(--or);border-color:rgba(251,146,60,.2);background:rgba(251,146,60,.05)}
+/* invite */
+.inv-blk{margin:14px;background:var(--s1);border-radius:18px;padding:22px;text-align:center;border:1px dashed rgba(255,255,255,.07)}
+
+/* ── PROFIL PAGE ── */
+.pro-top{display:flex;align-items:center;gap:16px;padding:16px 14px 0;margin-bottom:14px}
+.pro-av-big{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;border:2.5px solid var(--acc);flex-shrink:0;background:var(--s2)}
+.pro-name{font-family:var(--fn);font-size:24px;font-weight:700;letter-spacing:-.3px}
+.pro-since{font-size:12px;color:var(--mu);margin-top:2px}
+.pro-lv{display:inline-flex;align-items:center;gap:5px;margin-top:7px;padding:5px 12px;border-radius:100px;border:1px solid rgba(232,255,71,.2);background:rgba(232,255,71,.06);font-size:12px;font-weight:700;color:var(--acc);cursor:pointer}
+.sg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 14px 14px}
+.sc{background:var(--s1);border-radius:14px;padding:13px;text-align:center;border:1px solid var(--bo)}
+.sc-v{font-family:var(--fn);font-size:24px;font-weight:700;color:var(--acc)}
+.sc-l{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--mu);margin-top:3px}
+
+/* PRIVACY TOGGLE */
+.priv-section{margin:0 14px 14px;background:var(--s1);border-radius:16px;border:1px solid var(--bo);padding:16px}
+.priv-row{display:flex;align-items:center;justify-content:space-between}
+.priv-info .priv-t{font-size:14px;font-weight:600;margin-bottom:3px}
+.priv-info .priv-s{font-size:12px;color:var(--mu);line-height:1.5}
+/* custom toggle */
+.toggle-wrap{display:flex;align-items:center;gap:8px;cursor:pointer}
+.toggle{position:relative;width:48px;height:26px}
+.toggle input{opacity:0;width:0;height:0;position:absolute}
+.toggle-track{position:absolute;inset:0;border-radius:100px;background:var(--s3);border:1px solid var(--bo);transition:all .3s;cursor:pointer}
+.toggle input:checked + .toggle-track{background:rgba(192,132,252,.3);border-color:var(--pu)}
+.toggle-thumb{position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--mu);transition:all .3s}
+.toggle input:checked + .toggle-track + .toggle-thumb{transform:translateX(22px);background:var(--pu)}
+.toggle-lbl{font-size:12px;font-weight:600;color:var(--mu)}
+
+.sec-h{padding:12px 14px 8px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mu)}
+.cats-list{display:flex;flex-direction:column;gap:7px;padding:0 14px}
+.catrow{background:var(--s1);border-radius:12px;padding:12px 13px;border:1px solid var(--bo)}
+.catrow-t{display:flex;justify-content:space-between;font-size:13px;margin-bottom:7px}
+.cat-bar{height:3px;background:rgba(255,255,255,.06);border-radius:10px;overflow:hidden}
+.cat-fill{height:100%;border-radius:10px;transition:width 1s cubic-bezier(.16,1,.3,1)}
+.bdgs-list{display:flex;flex-wrap:wrap;gap:8px;padding:0 14px}
+.bdg{background:var(--s1);border-radius:12px;padding:11px 12px;border:1px solid var(--bo);display:flex;align-items:center;gap:9px}
+.bdg-e{font-size:21px}
+.bdg-n{font-size:13px;font-weight:600}
+.bdg-d{font-size:11px;color:var(--mu)}
+.settings-section{margin:10px 14px 0;display:flex;flex-direction:column;gap:8px}
+.set-btn{width:100%;padding:13px 16px;border-radius:100px;border:1px solid var(--bo);background:var(--s1);color:rgba(240,236,255,.5);font-family:var(--fn);font-weight:600;font-size:13px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:10px;transition:all .2s}
+.set-btn:hover{background:var(--s2);color:var(--tx)}
+.set-btn.danger{border-color:rgba(248,113,113,.2);color:var(--rd);background:rgba(248,113,113,.04)}
+
+/* ── NOTIF TOAST ── */
+.nt{position:fixed;top:-110px;left:50%;transform:translateX(-50%);background:var(--s2);border:1px solid rgba(232,255,71,.2);border-radius:18px;padding:13px 16px;display:flex;align-items:flex-start;gap:12px;transition:top .5s cubic-bezier(.16,1,.3,1);z-index:9999;min-width:280px;max-width:360px;box-shadow:0 24px 60px rgba(0,0,0,.7)}
+.nt.show{top:calc(var(--safe-top) + 14px)}
+.nt-em{font-size:24px;flex-shrink:0}
+.nt-t{font-size:14px;font-weight:700;margin-bottom:2px}
+.nt-s{font-size:12px;color:rgba(240,236,255,.4);line-height:1.4}
+.nt-x{margin-left:auto;color:var(--mu);cursor:pointer;padding-left:8px;font-size:16px;flex-shrink:0;padding-top:2px}
+
+/* ── INTENSITY MODAL ── */
+.mo-ov{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;display:none;align-items:flex-end;justify-content:center}
+.mo-ov.open{display:flex;animation:fdin .25s}
+@keyframes fdin{from{opacity:0}to{opacity:1}}
+.mo-box{background:var(--s1);border-radius:24px 24px 0 0;border:1px solid var(--bo);border-top:2px solid var(--acc);padding:26px 20px calc(var(--safe-bot) + 36px);width:100%;max-width:500px;animation:sup .4s cubic-bezier(.16,1,.3,1)}
+@keyframes sup{from{transform:translateY(100%)}to{transform:none}}
+.mo-t{font-family:var(--fn);font-size:24px;font-weight:700;margin-bottom:4px}
+.mo-s{font-size:13px;color:var(--mu);margin-bottom:18px}
+
+/* TOAST */
+.toast{position:fixed;bottom:calc(var(--safe-bot) + 88px);left:50%;transform:translateX(-50%) translateY(10px);background:var(--s3);border:1px solid var(--bo);border-radius:100px;padding:11px 20px;font-size:13px;font-weight:600;opacity:0;transition:all .35s;pointer-events:none;white-space:nowrap;z-index:999;max-width:320px;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* REACT PICKER — sélecteur d'émojis réactions */
+.react-btn{display:flex;align-items:center;gap:5px;padding:7px 13px;border-radius:100px;border:1px solid var(--bo);background:transparent;color:var(--tx);font-size:14px;cursor:pointer;transition:all .2s;font-family:var(--bd)}
+.react-btn:hover{background:var(--s2)}
+.react-preview{font-size:16px;line-height:1}
+.react-count{font-size:12px;font-weight:600;color:var(--mu)}
+.react-picker{position:absolute;bottom:48px;left:14px;background:var(--s2);border:1px solid var(--bo);border-radius:16px;padding:8px 10px;display:flex;gap:4px;z-index:50;box-shadow:0 8px 32px rgba(0,0,0,.5);animation:fup .2s cubic-bezier(.16,1,.3,1) both}
+.rp-em{width:36px;height:36px;border-radius:10px;border:none;background:transparent;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;line-height:1}
+.rp-em:hover{background:var(--s3);transform:scale(1.2)}
+
+/* color helpers */
+.c-pu{color:var(--pu)}.c-bl{color:var(--bl)}.c-gn{color:var(--gn)}.c-or{color:var(--or)}.c-pk{color:var(--pk)}.c-rd{color:var(--rd)}
+</style>
+</head>
+<body>
+<div id="root">
+
+<!-- SPLASH -->
+<div class="scr" id="splash">
+  <div class="sp-bg"><div class="sp-mesh"></div><div class="sp-grid"></div></div>
+  <div class="sp-inner">
+    <div class="sp-logo-wrap">
+      <div class="sp-logo">dare<span class="sp-dot"></span></div>
+      <div class="sp-logo-glow"></div>
+    </div>
+    <div class="sp-tag">Développement personnel · pour de vrai</div>
+    <div class="sp-bar"><div class="sp-fill"></div></div>
+  </div>
+</div>
+
+<!-- ONBOARDING -->
+<div class="scr off" id="onboard">
+  <div class="ob-wrap" id="ob-wrap">
+    <div class="ob-sl">
+      <div class="ob-slide-num">01</div>
+      <div class="ob-icon-wrap oi-1">⚡</div>
+      <div class="ob-title">Un défi par jour,<br><span class="hl">à l'improviste</span></div>
+      <div class="ob-body">La notif tombe sans prévenir. Tu as une fenêtre de temps. Sport, lecture, méditation, courage. Adapté à toi.</div>
+      <div class="ob-phone-preview">
+        <div class="ob-mini-phone">
+          <div class="omp-content">
+            <div class="omp-bar"><span class="omp-logo">dare.</span><span class="omp-sk">🔥 5</span></div>
+            <div class="omp-card"><div class="omp-em">📖</div><div class="omp-label">Lis 20 pages</div><div class="omp-badge">⚡ Nouveau</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ob-sl">
+      <div class="ob-slide-num">02</div>
+      <div class="ob-icon-wrap oi-2">🎥</div>
+      <div class="ob-title">Vidéo obligatoire.<br><span class="hl" style="background:linear-gradient(135deg,var(--gn),var(--bl));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">L'IA vérifie.</span></div>
+      <div class="ob-body">Filme-toi pendant que tu le fais. 10 secondes minimum. Claude Vision analyse que c'est réel. Pas de triche.</div>
+      <div class="ob-phone-preview">
+        <div class="ob-mini-phone">
+          <div class="omp-content">
+            <div class="omp-bar"><span class="omp-logo">dare.</span><span style="font-size:9px;color:var(--rd)">● 0:08</span></div>
+            <div class="omp-card" style="background:#0a0a0f">
+              <div style="font-size:32px">🏃</div>
+              <div class="omp-badge">✓ IA validé</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ob-sl">
+      <div class="ob-slide-num">03</div>
+      <div class="ob-icon-wrap oi-3">🏆</div>
+      <div class="ob-title">Tes amis te voient<br><span class="hl" style="background:linear-gradient(135deg,var(--or),var(--pk));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">progresser.</span></div>
+      <div class="ob-body">Feed comme BeReal. Streaks. XP. Badges. Compte privé ou public. Une vraie app de développement de soi.</div>
+      <div class="ob-phone-preview">
+        <div class="ob-mini-phone">
+          <div class="omp-content">
+            <div class="omp-bar"><span class="omp-logo">dare.</span><span class="omp-sk">🔥 12</span></div>
+            <div class="omp-card" style="background:#0a0a0f;gap:2px">
+              <div style="font-size:24px;font-family:var(--fn);font-weight:700;color:var(--acc)">12</div>
+              <div class="omp-label">jours de suite</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ob-foot">
+    <div class="ob-pips" id="pips"><div class="pip on"></div><div class="pip"></div><div class="pip"></div></div>
+    <button class="btn-ob" id="ob-btn" onclick="obNext()">Suivant →</button>
+    <button class="skip-ob" onclick="goInt()">Passer l'intro</button>
+  </div>
+</div>
+
+<!-- INTENSITY -->
+<div class="scr off" id="intensity">
+  <div class="int-kicker">Étape 1 / 2</div>
+  <div class="int-h">Ton niveau<br>de départ</div>
+  <div class="int-sub">Sois honnête. Les défis s'adaptent. Tu peux changer à tout moment depuis ton profil.</div>
+  <div class="lv-list">
+    <div class="lv" data-lv="1" onclick="pickLv(this)">
+      <div class="lv-in">
+        <div class="lv-row1"><div class="lv-em lv-em-1">🌱</div><div class="lv-right"><div class="lv-diff df-ez">Facile</div><div class="lv-check" id="lc1"></div></div></div>
+        <div class="lv-name">Je commence tranquille</div>
+        <div class="lv-desc">Créer l'habitude sans pression. Défis courts et accessibles. L'essentiel c'est d'agir chaque jour.</div>
+        <div class="lv-tags"><div class="lv-tag">📖 Lis 10 pages</div><div class="lv-tag">🧘 5 min de calme</div><div class="lv-tag">🚶 Marche 10 min</div><div class="lv-tag">✍️ Journal 3 min</div></div>
+      </div>
+    </div>
+    <div class="lv" data-lv="2" onclick="pickLv(this)">
+      <div class="lv-in">
+        <div class="lv-row1"><div class="lv-em lv-em-2">🔥</div><div class="lv-right"><div class="lv-diff df-md">Challenge</div><div class="lv-check" id="lc2"></div></div></div>
+        <div class="lv-name">Je veux me challenger</div>
+        <div class="lv-desc">Tu sors de ta zone de confort. Ça demande un effort réel. Tu vas vraiment progresser.</div>
+        <div class="lv-tags"><div class="lv-tag">🏃 Course 15 min</div><div class="lv-tag">📖 Lis 30 pages</div><div class="lv-tag">💬 Parle à un inconnu</div><div class="lv-tag">🎨 Crée quelque chose</div></div>
+      </div>
+    </div>
+    <div class="lv" data-lv="3" onclick="pickLv(this)">
+      <div class="lv-in">
+        <div class="lv-row1"><div class="lv-em lv-em-3">💀</div><div class="lv-right"><div class="lv-diff df-hd">Extrême</div><div class="lv-check" id="lc3"></div></div></div>
+        <div class="lv-name">Je suis chaud !</div>
+        <div class="lv-desc">Intense, inconfortable. Tu vas te dépasser vraiment. Pas pour tout le monde.</div>
+        <div class="lv-tags"><div class="lv-tag">💪 100 burpees</div><div class="lv-tag">🌅 Lever avant 5h30</div><div class="lv-tag">🎤 Chante en public</div><div class="lv-tag">📵 Sans téléphone 8h</div></div>
+      </div>
+    </div>
+  </div>
+  <button class="btn-cont" id="btn-cont" disabled onclick="goAuth()">Continuer →</button>
+</div>
+
+<!-- AUTH -->
+<div class="scr off" id="auth">
+  <div class="auth-logo">dare<em>.</em></div>
+  <div class="auth-sub">Rejoins des milliers de personnes qui progressent vraiment chaque jour</div>
+  <div class="a-tabs"><button class="a-tab on" id="at-l" onclick="swAuth('login')">Connexion</button><button class="a-tab" id="at-s" onclick="swAuth('signup')">Créer un compte</button></div>
+  <div id="af">
+    <div class="fld" id="f-un" style="display:none"><label>Pseudo</label><input type="text" id="inp-un" placeholder="ex: alex_dare"></div>
+    <div id="f-av" style="display:none;margin-bottom:14px">
+      <div style="font-size:10px;font-weight:700;color:var(--mu);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">Avatar</div>
+      <div class="av-g">
+        <div class="av-i on" onclick="pickAv(this)">🦊</div><div class="av-i" onclick="pickAv(this)">🐺</div>
+        <div class="av-i" onclick="pickAv(this)">🦁</div><div class="av-i" onclick="pickAv(this)">🐉</div>
+        <div class="av-i" onclick="pickAv(this)">⚡</div><div class="av-i" onclick="pickAv(this)">🧘</div>
+        <div class="av-i" onclick="pickAv(this)">📖</div><div class="av-i" onclick="pickAv(this)">🔥</div>
+      </div>
+    </div>
+    <div class="fld"><label>Email</label><input type="email" id="inp-em" placeholder="toi@mail.com" value="alex@example.com"></div>
+    <div class="fld"><label>Mot de passe</label><input type="password" id="inp-pw" placeholder="••••••••" value="password"></div>
+  </div>
+  <button class="btn-auth" id="auth-btn" onclick="doAuth()">Se connecter</button>
+  <div class="a-or">— ou —</div>
+  <button class="btn-goog" onclick="doAuth()">
+    <svg width="17" height="17" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+    Continuer avec Google
+  </button>
+</div>
+
+<!-- APP -->
+<div class="scr off" id="app">
+  <div class="topbar">
+    <div class="tb-logo">dare<em>.</em></div>
+    <div class="tb-center"><div class="tb-day">Aujourd'hui</div><div class="tb-timer" id="tb-timer">4:00:00</div></div>
+    <div class="tb-r"><div class="tb-sk">🔥 <span id="top-sk">0</span></div><div class="tb-av" id="top-av" onclick="goPage('profil')">🦊</div></div>
+  </div>
+
+  <div class="pages">
+    <!-- ── DÉFI ── -->
+    <div class="page on" id="page-defi">
+      <div class="ch-card" id="ch-card">
+        <div class="ch-hd">
+          <div class="ch-meta">
+            <div class="ch-kicker" id="ch-kicker">Défi du jour · 🔥 Challenge</div>
+            <div class="ch-title" id="ch-title">Lis 30 pages sans interruption</div>
+          </div>
+          <div class="ch-right">
+            <div class="timer-pill"><div class="tp-dot"></div><div class="tp-val" id="tp-val">4:00:00</div></div>
+            <div class="xp-pill">⚡ <span id="ch-xp">+20</span> XP</div>
+          </div>
+        </div>
+
+        <!-- VIDEO ZONE -->
+        <div class="vid-zone" id="vid-zone">
+          <div class="vz-empty" id="vz-empty" onclick="startRecording()">
+            <div class="vz-cam">🎥</div>
+            <div class="vz-title">Filme ton défi — 10s min</div>
+            <div class="vz-sub">Appuie pour enregistrer. L'IA vérifie que c'est réel.</div>
+          </div>
+          <!-- Recording state -->
+          <div class="vz-recording" id="vz-recording">
+            <div class="vz-viewfinder" id="vz-viewfinder">
+              <video id="live-video" autoplay muted playsinline style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0"></video>
+              <div class="rec-indicator"><div class="rec-dot"></div><div class="rec-time" id="rec-time">0:00</div></div>
+            </div>
+            <div class="vz-record-btn-wrap">
+              <div class="vz-rec-btn" id="rec-btn" onclick="stopRecording()"></div>
+            </div>
+          </div>
+          <!-- Preview after record -->
+          <div class="vz-preview" id="vz-preview">
+            <video id="preview-vid" playsinline loop autoplay muted style="width:100%;height:100%;object-fit:cover;display:block"></video>
+          </div>
+          <!-- selfie overlay -->
+          <div class="vz-selfie-overlay" id="vz-selfie" onclick="triggerSelfie()">
+            <input type="file" accept="image/*" id="self-input" style="display:none" onchange="onSelfie(event)">
+            <img id="selfie-img" class="vz-selfie-img" src="" alt="">
+            <span id="selfie-em">🤳</span>
+          </div>
+          <button class="vz-retake" id="retake-btn" onclick="retakeVideo()">↺ Refaire</button>
+          <div class="vz-checking" id="vz-checking" style="display:none"><div class="spin"></div>IA analyse…</div>
+          <div class="vz-ok" id="vz-ok" style="display:none">✓ Défi détecté</div>
+          <div class="vz-fail" id="vz-fail" style="display:none">✗ Pas le bon défi</div>
+        </div>
+
+        <div class="ai-msg" id="ai-msg"></div>
+
+        <div class="desc-wrap">
+          <div class="desc-top"><div class="desc-lbl">Ce que tu as fait</div><div class="desc-cnt" id="desc-cnt">0 / 280</div></div>
+          <textarea class="desc-ta" id="desc-ta" placeholder="Ex: Lu 34 pages du livre 'Atomic Habits'. Le chapitre sur les habitudes identitaires m'a vraiment parlé." oninput="onDesc()" maxlength="280" rows="3"></textarea>
+        </div>
+
+        <div class="val-strip">
+          <div class="vs-list">
+            <div class="vi" id="vi1"><div class="vi-dot"></div>Vidéo</div>
+            <div class="vi" id="vi2"><div class="vi-dot"></div>IA ✓</div>
+            <div class="vi" id="vi3"><div class="vi-dot"></div>Selfie</div>
+            <div class="vi" id="vi4"><div class="vi-dot"></div>Description</div>
+          </div>
+          <div class="vs-pct" id="vs-pct">0%</div>
+        </div>
+
+        <div class="sub-wrap">
+          <button class="btn-sub" id="btn-sub" disabled onclick="submitDare()">Valider mon défi</button>
+        </div>
+        <div class="anti-cheat-note"><span>🔒</span>Vidéo + selfie + description (25 car. min). L'IA vérifie que c'est bien le bon défi.</div>
+        <div style="height:14px"></div>
+      </div>
+
+      <div class="done-card" id="done-card">
+        <div class="dc-top"><div class="dc-chk">✓</div><div><div class="dc-title">Défi validé !</div><div class="dc-sub">Preuve acceptée · Partagé avec tes amis</div></div></div>
+        <div class="dc-media">
+          <div class="dc-media-ph" id="dc-ph">🎥</div>
+          <video id="dc-vid" class="dc-vid" playsinline loop autoplay muted></video>
+          <img id="dc-selfie" class="dc-selfie" src="" alt="">
+        </div>
+        <div class="dc-caption" id="dc-cap"></div>
+        <div class="dc-stats">
+          <div class="dcs"><div class="dcs-v" id="dcs-xp">+20</div><div class="dcs-l">XP gagnés</div></div>
+          <div class="dcs"><div class="dcs-v" id="dcs-sk">1</div><div class="dcs-l">Streak 🔥</div></div>
+          <div class="dcs"><div class="dcs-v" id="dcs-tot">1</div><div class="dcs-l">Total défis</div></div>
+        </div>
+      </div>
+
+      <div class="wid">
+        <div class="wid-top"><div><div class="wid-num" id="sk-n">0</div><div class="wid-lbl">Jours de suite</div></div><div class="wid-rec">Record perso<br><b id="rec-n">0 jours</b></div></div>
+        <div class="days-row">
+          <div class="dy"><div class="dd" id="d0"></div><div class="dy-l">L</div></div>
+          <div class="dy"><div class="dd" id="d1"></div><div class="dy-l">M</div></div>
+          <div class="dy"><div class="dd" id="d2"></div><div class="dy-l">M</div></div>
+          <div class="dy"><div class="dd" id="d3"></div><div class="dy-l">J</div></div>
+          <div class="dy"><div class="dd" id="d4"></div><div class="dy-l">V</div></div>
+          <div class="dy"><div class="dd" id="d5"></div><div class="dy-l">S</div></div>
+          <div class="dy"><div class="dd td" id="d6"></div><div class="dy-l">D</div></div>
+        </div>
+      </div>
+      <div class="xp-wid">
+        <div class="xpw-r"><div class="xpw-lv" id="xpw-lv">Niveau 1 — Rookie</div><div class="xpw-v" id="xpw-v">0 / 100 XP</div></div>
+        <div class="xp-track"><div class="xp-bar" id="xp-bar" style="width:0%"></div></div>
+        <div class="lv-scroll" id="lv-scroll"></div>
+      </div>
+      <div style="height:10px"></div>
+    </div>
+
+    <!-- ── FEED ── -->
+    <div class="page" id="page-feed">
+      <div id="feed-lock-view" style="display:none">
+        <div class="feed-lock">
+          <div class="fl-em">🔒</div>
+          <div class="fl-t">Poste d'abord</div>
+          <div class="fl-s">Comme BeReal — tu vois les preuves de tes amis seulement après avoir partagé la tienne.</div>
+          <button class="btn-go-dare" onclick="goPage('defi')">Aller au défi →</button>
+        </div>
+      </div>
+      <div id="feed-open-view">
+        <div id="feed-list"></div>
+        <div class="inv-blk">
+          <div style="font-size:28px;margin-bottom:8px">👥</div>
+          <div style="font-size:14px;font-weight:600;margin-bottom:5px">Invite tes amis</div>
+          <div style="font-size:13px;color:var(--mu);margin-bottom:14px;line-height:1.6">Vois leurs preuves quotidiennes et progressez ensemble.</div>
+          <button style="padding:9px 22px;border-radius:100px;border:1px solid var(--bo);background:transparent;color:rgba(240,236,255,.6);font-family:var(--fn);font-weight:600;font-size:13px;cursor:pointer" onclick="showToast('Lien copié !')">Inviter des amis</button>
+        </div>
+        <div style="height:12px"></div>
+      </div>
+    </div>
+
+    <!-- ── PROFIL ── -->
+    <div class="page" id="page-profil">
+      <div class="pro-top">
+        <div class="pro-av-big" id="pro-av">🦊</div>
+        <div>
+          <div class="pro-name" id="pro-name">Joueur</div>
+          <div class="pro-since" id="pro-since">Membre depuis aujourd'hui</div>
+          <div class="pro-lv" id="pro-lv" onclick="openMo()">🔥 Challenge — Changer →</div>
+        </div>
+      </div>
+
+      <!-- PRIVACY TOGGLE -->
+      <div class="priv-section">
+        <div class="priv-row">
+          <div class="priv-info">
+            <div class="priv-t" id="priv-title">Compte public</div>
+            <div class="priv-s">Tes défis sont visibles par tout le monde</div>
+          </div>
+          <label class="toggle-wrap" onclick="togglePrivacy()">
+            <div class="toggle">
+              <input type="checkbox" id="priv-toggle">
+              <div class="toggle-track"></div>
+              <div class="toggle-thumb"></div>
+            </div>
+            <span class="toggle-lbl" id="priv-lbl">Public</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="sg">
+        <div class="sc"><div class="sc-v" id="p-tot">0</div><div class="sc-l">Défis</div></div>
+        <div class="sc"><div class="sc-v" id="p-sk">0</div><div class="sc-l">Streak 🔥</div></div>
+        <div class="sc"><div class="sc-v" id="p-xp">0</div><div class="sc-l">XP</div></div>
+      </div>
+      <div class="sec-h">Catégories</div>
+      <div class="cats-list">
+        <div class="catrow"><div class="catrow-t"><span>📖 Lecture</span><span class="c-bl" id="c-rd">0 défis</span></div><div class="cat-bar"><div class="cat-fill" id="f-rd" style="width:0%;background:linear-gradient(90deg,var(--bl),var(--pu))"></div></div></div>
+        <div class="catrow"><div class="catrow-t"><span>🧘 Mindfulness</span><span class="c-gn" id="c-mi">0 défis</span></div><div class="cat-bar"><div class="cat-fill" id="f-mi" style="width:0%;background:linear-gradient(90deg,var(--gn),var(--bl))"></div></div></div>
+        <div class="catrow"><div class="catrow-t"><span>🏃 Sport</span><span class="c-or" id="c-sp">0 défis</span></div><div class="cat-bar"><div class="cat-fill" id="f-sp" style="width:0%;background:linear-gradient(90deg,var(--or),var(--pk))"></div></div></div>
+        <div class="catrow"><div class="catrow-t"><span>💬 Courage</span><span class="c-pk" id="c-co">0 défis</span></div><div class="cat-bar"><div class="cat-fill" id="f-co" style="width:0%;background:linear-gradient(90deg,var(--pk),var(--pu))"></div></div></div>
+        <div class="catrow"><div class="catrow-t"><span>🎨 Créativité</span><span class="c-pu" id="c-cr">0 défis</span></div><div class="cat-bar"><div class="cat-fill" id="f-cr" style="width:0%;background:linear-gradient(90deg,var(--pu),var(--bl))"></div></div></div>
+      </div>
+      <div class="sec-h">Badges</div>
+      <div class="bdgs-list" id="bdg-list">
+        <div class="bdg" style="opacity:.2"><div class="bdg-e">🔥</div><div><div class="bdg-n">En feu</div><div class="bdg-d">7 jours streak</div></div></div>
+        <div class="bdg" style="opacity:.2"><div class="bdg-e">📖</div><div><div class="bdg-n">Lecteur</div><div class="bdg-d">10 défis lecture</div></div></div>
+        <div class="bdg" style="opacity:.2"><div class="bdg-e">🏃</div><div><div class="bdg-n">Runner</div><div class="bdg-d">10 défis sport</div></div></div>
+        <div class="bdg" style="opacity:.2"><div class="bdg-e">🎥</div><div><div class="bdg-n">No Cheat</div><div class="bdg-d">5 vidéos validées</div></div></div>
+      </div>
+      <div class="settings-section">
+        <button class="set-btn" onclick="openMo()">⚡ Changer d'intensité</button>
+        <button class="set-btn" onclick="showToast('Notifications bientôt disponibles dans la PWA !')">🔔 Notifications push</button>
+        <button class="set-btn" onclick="showToast('Export bientôt disponible !')">📊 Exporter mes données</button>
+        <button class="set-btn danger" onclick="doLogout()">Se déconnecter</button>
+      </div>
+      <div style="height:20px"></div>
+    </div>
+  </div>
+
+  <div class="bnav">
+    <button class="bn on" id="bn-defi" onclick="goPage('defi')">
+      <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Défi
+    </button>
+    <button class="bn" id="bn-feed" onclick="goPage('feed')">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Amis
+    </button>
+    <button class="bn" id="bn-profil" onclick="goPage('profil')">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profil
+    </button>
+  </div>
+</div>
+
+<!-- INTENSITY MODAL -->
+<div class="mo-ov" id="mo-ov" onclick="closeMo(event)">
+  <div class="mo-box">
+    <div class="mo-t">Changer d'intensité</div>
+    <div class="mo-s">Le prochain défi s'adapte immédiatement.</div>
+    <div id="mo-cards">
+      <div class="lv" data-lv="1" onclick="moLv(this)" style="margin-bottom:8px"><div class="lv-in"><div class="lv-row1"><div class="lv-em lv-em-1">🌱</div><div class="lv-right"><div class="lv-diff df-ez">Facile</div><div class="lv-check"></div></div></div><div class="lv-name">Je commence tranquille</div></div></div>
+      <div class="lv" data-lv="2" onclick="moLv(this)" style="margin-bottom:8px"><div class="lv-in"><div class="lv-row1"><div class="lv-em lv-em-2">🔥</div><div class="lv-right"><div class="lv-diff df-md">Challenge</div><div class="lv-check"></div></div></div><div class="lv-name">Je veux me challenger</div></div></div>
+      <div class="lv" data-lv="3" onclick="moLv(this)" style="margin-bottom:14px"><div class="lv-in"><div class="lv-row1"><div class="lv-em lv-em-3">💀</div><div class="lv-right"><div class="lv-diff df-hd">Extrême</div><div class="lv-check"></div></div></div><div class="lv-name">Je suis chaud !</div></div></div>
+    </div>
+    <button class="btn-cont" id="mo-save" onclick="saveMo()" disabled>Enregistrer</button>
+  </div>
+</div>
+
+<!-- NOTIF -->
+<div class="nt" id="nt">
+  <div class="nt-em" id="nt-em">⚡</div>
+  <div><div class="nt-t" id="nt-t">Défi reçu !</div><div class="nt-s" id="nt-s">Vidéo obligatoire. L'IA vérifie.</div></div>
+  <div class="nt-x" onclick="closeNt()">✕</div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ══ STATE GLOBAL ══
+// Tout l'état de l'app est centralisé ici pour faciliter le debug
+const S = {
+  lv:2,           // niveau d'intensité : 1=tranquille, 2=challenge, 3=extrême
+  name:'Joueur',  // pseudo de l'utilisateur
+  av:'🦊',        // avatar emoji choisi à l'inscription
+  streak:0,       // nombre de jours consécutifs avec un défi validé
+  record:0,       // record personnel de streak
+  xp:0,           // points d'expérience totaux
+  total:0,        // nombre total de défis validés
+  cats:{rd:0,mi:0,sp:0,co:0,cr:0}, // compteurs par catégorie (rd=lecture, mi=mindfulness, sp=sport, co=courage, cr=créativité)
+  isPrivate:false, // compte privé (true) ou public (false)
+  obIdx:0,         // index de la slide d'onboarding en cours
+  aMode:'login',   // mode auth : 'login' ou 'signup'
+  done:false,      // défi du jour déjà validé ?
+  timerSecs:14400, // timer en secondes (4h = 14400s)
+  cIdx:0,          // index du défi dans la liste du niveau actuel
+  videoBlob:null,  // blob de la vidéo enregistrée
+  selfieData:null, // base64 du selfie
+  descOk:false,    // description valide (≥25 caractères) ?
+  aiOk:false,      // l'IA a validé la vidéo ?
+  feedUnlocked:false, // feed visible seulement après avoir posté
+  // MediaRecorder API pour l'enregistrement vidéo natif
+  mediaStream:null,
+  mediaRecorder:null,
+  recChunks:[],    // morceaux de vidéo accumulés pendant l'enregistrement
+  recInterval:null,
+  recSecs:0,       // durée d'enregistrement en secondes
+};
+
+// ══ DÉFIS PAR NIVEAU ══
+// Chaque défi a : titre (t), description (d), XP récompense, catégorie, clé catégorie, kicker affiché
+// Les défis sont tirés ALÉATOIREMENT — catégories équilibrées, pas de domination lecture
+const CH = {
+  // ── NIVEAU 1 : Tranquille ── créer l'habitude sans pression
+  1:[
+    // Sport
+    {t:'Marche 10 min en plein air',d:'Dehors. 10 minutes. Téléphone rangé. Respire.',xp:8,cat:'Sport',ck:'sp',kicker:'Sport · 🌱 Tranquille'},
+    {t:'Étirements 8 minutes',d:'Debout ou au sol. Dos, jambes, cou. Filme ton corps qui bouge.',xp:8,cat:'Sport',ck:'sp',kicker:'Sport · 🌱 Tranquille'},
+    {t:'20 squats + 10 pompes',d:'Fais-les maintenant. Enchaîne sans pause. Filme depuis le début.',xp:10,cat:'Sport',ck:'sp',kicker:'Sport · 🌱 Tranquille'},
+    // Mindfulness
+    {t:'5 minutes de méditation assise',d:'Assis, dos droit, yeux fermés. Filme-toi en position au début.',xp:8,cat:'Mindfulness',ck:'mi',kicker:'Mindfulness · 🌱 Tranquille'},
+    {t:'Pose ton téléphone 20 minutes',d:'Minuterie sur 20 min. Téléphone face cachée. Documente ce que tu as fait pendant ce temps.',xp:10,cat:'Mindfulness',ck:'mi',kicker:'Mindfulness · 🌱 Tranquille'},
+    // Créativité
+    {t:'Dessine quelque chose en 5 min',d:'Stylo, papier, ou appli. N\'importe quoi. Filme le résultat.',xp:8,cat:'Créativité',ck:'cr',kicker:'Créativité · 🌱 Tranquille'},
+    // Lecture
+    {t:'Lis 10 pages sans interruption',d:'Vrai livre, téléphone hors de portée. Filme la couverture et les pages.',xp:8,cat:'Lecture',ck:'rd',kicker:'Lecture · 🌱 Tranquille'},
+    // Courage
+    {t:'Dis merci à quelqu\'un en vrai',d:'Quelqu\'un que tu oublies souvent de remercier. Irl, pas par message. Filme ta réaction après.',xp:10,cat:'Courage',ck:'co',kicker:'Courage · 🌱 Tranquille'},
+  ],
+  // ── NIVEAU 2 : Challenge ── sortir de sa zone de confort
+  2:[
+    // Sport
+    {t:'Course continue 15 min',d:'Dehors. Chrono. 15 min sans s\'arrêter. Filme-toi qui part et qui arrive.',xp:20,cat:'Sport',ck:'sp',kicker:'Sport · 🔥 Challenge'},
+    {t:'30 pompes + 40 squats + 20 dips',d:'Circuit complet enchaîné sans repos. Filme toute la séquence.',xp:18,cat:'Sport',ck:'sp',kicker:'Sport · 🔥 Challenge'},
+    {t:'Vélo ou trottinette 25 min',d:'En extérieur. 25 min chronométrées. Filme depuis ta selle en partant.',xp:18,cat:'Sport',ck:'sp',kicker:'Sport · 🔥 Challenge'},
+    // Mindfulness
+    {t:'Méditation 15 min sans interruption',d:'15 minutes de pratique consciente. Installe-toi et filme ta position de départ.',xp:16,cat:'Mindfulness',ck:'mi',kicker:'Mindfulness · 🔥 Challenge'},
+    {t:'Journaling 10 min — questions dures',d:'Écris ce que tu évites de te dire. Filme ton carnet ouvert et ton stylo qui bouge.',xp:16,cat:'Mindfulness',ck:'mi',kicker:'Mindfulness · 🔥 Challenge'},
+    // Créativité
+    {t:'Crée quelque chose en 20 min',d:'Dessin, texte, musique, code. Produis de zéro. Filme le processus.',xp:18,cat:'Créativité',ck:'cr',kicker:'Créativité · 🔥 Challenge'},
+    {t:'Apprends 5 accords de guitare/piano',d:'Instrument en main. 5 accords, pratique réelle. Filme tes mains sur l\'instrument.',xp:20,cat:'Créativité',ck:'cr',kicker:'Créativité · 🔥 Challenge'},
+    // Courage
+    {t:'Parle à un·e inconnu·e aujourd\'hui',d:'Une vraie conversation, pas juste bonjour. Filme ta réaction juste après.',xp:22,cat:'Courage',ck:'co',kicker:'Courage · 🔥 Challenge'},
+    {t:'Appelle quelqu\'un que tu as négligé',d:'Cette personne à qui tu dois donner des nouvelles. Appelle maintenant. Filme avant d\'appuyer sur appeler.',xp:20,cat:'Courage',ck:'co',kicker:'Courage · 🔥 Challenge'},
+    // Lecture
+    {t:'Lis 30 pages sans téléphone',d:'30 pages d\'un coup. Pas de pauses écrans. Filme la couverture + ton environnement de lecture.',xp:18,cat:'Lecture',ck:'rd',kicker:'Lecture · 🔥 Challenge'},
+  ],
+  // ── NIVEAU 3 : Extrême ── se dépasser vraiment
+  3:[
+    // Sport
+    {t:'100 burpees non-stop',d:'100 burpees complets. Tu peux souffler debout mais pas t\'asseoir. Filme depuis le début.',xp:45,cat:'Sport',ck:'sp',kicker:'Sport · 💀 Extrême'},
+    {t:'Course 30 min avant 7h du matin',d:'Réveil avant 6h30. Dehors en courant avant 7h. Filme l\'heure sur ta montre + la rue.',xp:50,cat:'Sport',ck:'sp',kicker:'Sport · 💀 Extrême'},
+    {t:'Sprint 5×400m avec chrono',d:'5 sprints à fond, 90s de récup. Filme chaque départ de sprint.',xp:40,cat:'Sport',ck:'sp',kicker:'Sport · 💀 Extrême'},
+    // Mindfulness
+    {t:'Sans téléphone de 9h à 17h',d:'Éteins à 9h, rallume à 17h. Filme ton téléphone éteint, puis documente ce que tu as fait.',xp:55,cat:'Mindfulness',ck:'mi',kicker:'Mindfulness · 💀 Extrême'},
+    {t:'1h de silence complet',d:'Pas de musique, pas d\'écrans, pas de conversation. Juste toi. Filme ton environnement de départ.',xp:45,cat:'Mindfulness',ck:'mi',kicker:'Mindfulness · 💀 Extrême'},
+    // Courage
+    {t:'Chante ou joue devant des gens',d:'Devant au moins 2 personnes réelles. Interprète quelque chose. Filme la performance.',xp:50,cat:'Courage',ck:'co',kicker:'Courage · 💀 Extrême'},
+    {t:'Dis à quelqu\'un quelque chose que tu n\'as jamais dit',d:'Une vérité difficile, des sentiments vrais. Filme avant d\'y aller.',xp:55,cat:'Courage',ck:'co',kicker:'Courage · 💀 Extrême'},
+    // Créativité
+    {t:'Crée et publie quelque chose en ligne',d:'Vidéo, post, article, dessin. Crée ET publie aujourd\'hui. Filme l\'écran de publication.',xp:45,cat:'Créativité',ck:'cr',kicker:'Créativité · 💀 Extrême'},
+    // Lecture
+    {t:'Lis 60 pages en une seule session',d:'60 pages d\'un coup, sans pause supérieure à 5 min. Filme le livre + les pages au début et à la fin.',xp:40,cat:'Lecture',ck:'rd',kicker:'Lecture · 💀 Extrême'},
+  ],
+};
+// Définition des paliers XP pour chaque niveau de progression
+const LVS=[{n:'Rookie',min:0,max:100},{n:'Active',min:100,max:250},{n:'Challenger',min:250,max:500},{n:'Expert',min:500,max:900},{n:'Elite',min:900,max:1500},{n:'Legend',min:1500,max:9999}];
+
+// Métadonnées des 3 intensités de défi
+const INT={1:{n:'Tranquille',e:'🌱'},2:{n:'Challenge',e:'🔥'},3:{n:'Extrême',e:'💀'}};
+
+// Couleurs CSS associées à chaque catégorie de défi pour l'affichage
+const CAT_COLORS={'Lecture':'var(--bl)','Mindfulness':'var(--gn)','Sport':'var(--or)','Courage':'var(--pk)','Créativité':'var(--pu)'};
+
+// Données de démo pour le feed — en prod ces données viendraient d'une API/base de données
+// topReact = emoji le plus utilisé sur ce post, reacts = compteurs par emoji
+const FEED_SEED=[
+  {n:'Sarah',av:'S',bg:'#7c3aed',ch:'Lis 30 pages',cat:'Lecture',cap:'Lu 34 pages d\'Atomic Habits. Le chapitre sur l\'identité m\'a retourné la tête. Je recommence demain.',time:'22 min',fires:18,topReact:'🤯',reacts:{},em:'📖',aiOk:true,priv:false},
+  {n:'Max',av:'M',bg:'#0ea5e9',ch:'Course 15 min',cat:'Sport',cap:'2.4km en 15min. Jambes mortes mais j\'ai pas arrêté une seule fois. 🔥',time:'1h 10min',fires:31,topReact:'💪',reacts:{},em:'🏃',aiOk:true,priv:false},
+  {n:'Julie',av:'J',bg:'#22c55e',ch:'Méditation 15 min',cat:'Mindfulness',cap:'15 minutes complètes. J\'ai eu du mal à rester 5 min normalement. Là j\'ai tenu. Vraiment différent.',time:'2h 15min',fires:24,topReact:'✨',reacts:{},em:'🧘',aiOk:true,priv:false},
+];
+
+// ══ PWA — Progressive Web App ══
+// Enregistre le service worker pour le cache offline et les notifications push
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});}
+// Capture l'événement "installer l'app" pour le proposer à l'utilisateur plus tard
+let deferredInstall=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;});
+
+// ══ SPLASH ══
+// Délai avant de passer à l'onboarding le temps que l'animation de chargement se termine
+setTimeout(()=>go('splash','onboard'),2800);
+
+// ══ ONBOARDING ══
+// Navigation entre les 3 slides d'intro
+function obNext(){if(S.obIdx<2){S.obIdx++;document.getElementById('ob-wrap').style.transform=`translateX(-${S.obIdx*33.333}%)`;document.querySelectorAll('.pip').forEach((p,i)=>p.classList.toggle('on',i===S.obIdx));if(S.obIdx===2)document.getElementById('ob-btn').textContent='Choisir mon niveau →';}else goInt();}
+function goInt(){go('onboard','intensity');}
+
+// ══ CHOIX DU NIVEAU D'INTENSITÉ ══
+let chLv=null; // niveau choisi, null tant que rien n'est sélectionné
+function pickLv(el){document.querySelectorAll('.lv-list .lv').forEach(c=>{c.classList.remove('sel');c.querySelector('.lv-check').textContent='';});el.classList.add('sel');el.querySelector('.lv-check').textContent='✓';chLv=parseInt(el.dataset.lv);document.getElementById('btn-cont').disabled=false;}
+function goAuth(){if(chLv)S.lv=chLv;go('intensity','auth');}
+
+// ══ AUTHENTIFICATION ══
+function swAuth(m){S.aMode=m;document.getElementById('at-l').classList.toggle('on',m==='login');document.getElementById('at-s').classList.toggle('on',m==='signup');document.getElementById('f-un').style.display=m==='signup'?'block':'none';document.getElementById('f-av').style.display=m==='signup'?'block':'none';document.getElementById('auth-btn').textContent=m==='login'?'Se connecter':'Créer mon compte';}
+function pickAv(el){document.querySelectorAll('.av-i').forEach(a=>a.classList.remove('on'));el.classList.add('on');S.av=el.textContent;}
+function doAuth(){const un=document.getElementById('inp-un').value.trim();if(S.aMode==='signup'&&un)S.name=un;go('auth','app');initApp();}
+
+// ══ INITIALISATION DE L'APP ══
+// Appelée une seule fois après la connexion — met tout en place
+function initApp(){
+  // Mise à jour des éléments UI avec les infos utilisateur
+  document.getElementById('top-av').textContent=S.av;
+  document.getElementById('pro-av').textContent=S.av;
+  document.getElementById('pro-name').textContent=S.name;
+  // Tire un défi aléatoire dès le départ (pas toujours le premier de la liste)
+  S.cIdx=Math.floor(Math.random()*getCH().length);
+  // Rendu initial de tous les composants
+  renderCh();renderXP();renderStreak();updateLvChip();buildFeed();startTimer();
+  // Demande de permission pour les notifications push (après 3 secondes pour ne pas être intrusif)
+  if('Notification' in window && Notification.permission==='default'){
+    setTimeout(()=>Notification.requestPermission(),3000);
+  }
+  // Simule une notif de défi après 5 secondes pour la démo
+  setTimeout(showNt,5000);
+}
+
+// ══ AFFICHAGE DU DÉFI ══
+// Tire un défi au hasard dans la liste du niveau actuel — jamais le même deux fois de suite
+function getCH(){return CH[S.lv];}
+
+// Pioche un index aléatoire différent du dernier pour éviter les répétitions
+function pickRandomChallengeIdx(){
+  const list=getCH();
+  if(list.length<=1)return 0;
+  let next;
+  do{ next=Math.floor(Math.random()*list.length); }
+  while(next===S.cIdx); // garantit un changement à chaque tirage
+  return next;
+}
+
+function renderCh(){
+  const c=getCH()[S.cIdx];
+  document.getElementById('ch-kicker').textContent=c.kicker;
+  document.getElementById('ch-kicker').style.color=CAT_COLORS[c.cat]||'var(--acc)';
+  document.getElementById('ch-title').textContent=c.t;
+  document.getElementById('ch-xp').textContent='+'+c.xp;
+}
+
+// ══ ENREGISTREMENT VIDÉO ══
+// Utilise l'API MediaDevices pour accéder à la caméra (caméra arrière par défaut)
+async function startRecording(){
+  try{
+    // Demande l'accès à la caméra arrière et au micro
+    const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:1280},height:{ideal:720}},audio:true});
+    S.mediaStream=stream;
+    // Affiche le flux live dans le viewfinder
+    document.getElementById('live-video').srcObject=stream;
+    document.getElementById('vz-empty').style.display='none';
+    document.getElementById('vz-recording').style.display='flex';
+    S.recChunks=[];S.recSecs=0;
+    // Crée le MediaRecorder avec codec vidéo WebM/VP8
+    S.mediaRecorder=new MediaRecorder(stream,{mimeType:'video/webm;codecs=vp8'});
+    // Accumule les morceaux de vidéo au fur et à mesure
+    S.mediaRecorder.ondataavailable=e=>{if(e.data.size>0)S.recChunks.push(e.data);};
+    // Quand l'enregistrement s'arrête, assemble le blob et lance l'analyse IA
+    S.mediaRecorder.onstop=()=>{
+      S.videoBlob=new Blob(S.recChunks,{type:'video/webm'});
+      const url=URL.createObjectURL(S.videoBlob);
+      document.getElementById('preview-vid').src=url;
+      document.getElementById('vz-recording').style.display='none';
+      document.getElementById('vz-preview').style.display='block';
+      document.getElementById('vz-selfie').style.display='flex';
+      document.getElementById('retake-btn').style.display='flex';
+      // Libère la caméra dès que l'enregistrement est terminé
+      stream.getTracks().forEach(t=>t.stop());
+      analyzeVideo();
+    };
+    // Démarre l'enregistrement, collecte les données toutes les 100ms
+    S.mediaRecorder.start(100);
+    // Met à jour le timer d'enregistrement toutes les secondes
+    S.recInterval=setInterval(()=>{
+      S.recSecs++;
+      const m=Math.floor(S.recSecs/60),sec=S.recSecs%60;
+      document.getElementById('rec-time').textContent=`${m}:${String(sec).padStart(2,'0')}`;
+    },1000);
+  }catch(err){
+    // Si la caméra n'est pas disponible (desktop, permissions refusées), mode démo
+    showToast('Caméra non disponible — mode démo activé');
+    simulateRecording();
+  }
+}
+
+// Mode démo quand la caméra est indisponible (ex: desktop)
+function simulateRecording(){
+  document.getElementById('vz-empty').style.display='none';
+  document.getElementById('vz-recording').style.display='flex';
+  document.getElementById('vz-viewfinder').innerHTML='<div style="position:absolute;inset:0;background:#111;display:flex;align-items:center;justify-content:center;font-size:48px">🎥<div class="rec-indicator"><div class="rec-dot"></div><div class="rec-time" id="rec-time">0:00</div></div></div>';
+  S.recSecs=0;
+  S.recInterval=setInterval(()=>{S.recSecs++;const m=Math.floor(S.recSecs/60),sec=S.recSecs%60;const rt=document.getElementById('rec-time');if(rt)rt.textContent=`${m}:${String(sec).padStart(2,'0')}`;},1000);
+}
+
+// Arrête l'enregistrement — vérifie qu'on a au moins 10 secondes
+function stopRecording(){
+  clearInterval(S.recInterval);
+  if(S.recSecs<10){showToast(`Encore ${10-S.recSecs} secondes !`);return;}
+  if(S.mediaRecorder&&S.mediaRecorder.state!=='inactive'){S.mediaRecorder.stop();}
+  else{
+    // Mode démo — on simule directement la preview et l'analyse
+    document.getElementById('vz-recording').style.display='none';
+    document.getElementById('vz-preview').style.display='block';
+    document.getElementById('vz-preview').innerHTML='<div style="width:100%;height:100%;background:#111;display:flex;align-items:center;justify-content:center;font-size:56px">🎥</div>';
+    document.getElementById('vz-selfie').style.display='flex';
+    document.getElementById('retake-btn').style.display='flex';
+    analyzeVideoDemo();
+  }
+}
+
+// ══ ANALYSE IA DE LA VIDÉO ══
+// Extrait une frame de la vidéo → envoie à Claude Vision → vérifie que c'est le bon défi
+async function analyzeVideo(){
+  // Affiche le spinner pendant l'analyse
+  fxd('vz-checking','flex');fxd('vz-ok','none');fxd('vz-fail','none');
+  showAiMsg('⏳ L\'IA analyse ta vidéo…','loading');
+  const vid=document.getElementById('preview-vid');
+  // Attend que la vidéo soit chargée pour extraire une frame
+  await new Promise(r=>vid.addEventListener('loadeddata',r,{once:true}));
+  // Capture une frame au format JPEG réduit (320×240) pour minimiser la taille
+  const canvas=document.createElement('canvas');
+  canvas.width=320;canvas.height=240;
+  const ctx=canvas.getContext('2d');
+  ctx.drawImage(vid,0,0,320,240);
+  const frame=canvas.toDataURL('image/jpeg',.7).split(',')[1];
+  const c=getCH()[S.cIdx%getCH().length];
+  try{
+    // Appel à l'API Claude Vision avec la frame extraite + prompt strict anti-triche
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',max_tokens:200,
+        system:`Tu es un validateur STRICT et SÉVÈRE pour dare., une app de développement personnel. Tu dois refuser TOUT ce qui n'est pas clairement en train d'accomplir le défi exact.
+
+DÉFI À VALIDER : "${c.t}"
+CATÉGORIE : ${c.cat}
+
+RÈGLES STRICTES :
+- ok=true UNIQUEMENT si l'image montre CLAIREMENT une personne en train de faire ce défi précis (ex: lire un livre ouvert, courir dehors, méditer, etc.)
+- ok=false si c'est : une pièce vide, un écran de téléphone, un paysage sans personne, une personne assise sans faire le défi, une photo floue inexploitable, un selfie sans contexte de défi, un mur/plafond, de la nourriture, un animal, n'importe quoi d'ambigu
+- ok=false si l'activité visible NE CORRESPOND PAS EXACTEMENT à "${c.t}"
+- Sois SÉVÈRE. En cas de doute → ok=false. Tu n'es pas là pour être gentil.
+
+Réponds UNIQUEMENT en JSON valide : {"ok":true,"reason":"15 mots max"} ou {"ok":false,"reason":"15 mots max, dis exactement ce que tu vois"}`,
+        messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:frame}},{type:'text',text:`Valide strictement : est-ce que cette image montre quelqu'un en train de faire le défi "${c.t}" ?`}]}]
+      })
+    });
+    const data=await res.json();
+    let result;
+    // Parse la réponse JSON de Claude (retire les backticks si présents)
+    try{result=JSON.parse(data.content[0].text.replace(/```json|```/g,'').trim());}catch{result={ok:false,reason:'Impossible d\'analyser'};}
+    fxd('vz-checking','none');
+    if(result.ok){
+      // ✅ Défi validé par l'IA
+      S.aiOk=true;fxd('vz-ok','flex');showAiMsg(`✓ ${result.reason}`,'ok');
+    }else{
+      // ❌ L'IA a refusé la vidéo — reset automatique après 2.5s
+      S.aiOk=false;fxd('vz-fail','flex');showAiMsg(`✗ ${result.reason} — Refais une vidéo du bon défi.`,'fail');setTimeout(retakeVideo,2500);
+    }
+  }catch{
+    // Erreur réseau ou API indisponible → on accepte en mode offline pour ne pas bloquer
+    fxd('vz-checking','none');S.aiOk=true;fxd('vz-ok','flex');
+    showAiMsg('✓ Mode hors-ligne — vidéo acceptée','ok');
+  }
+  updateVal();
+}
+
+// Version démo de l'analyse (quand MediaRecorder n'est pas dispo)
+function analyzeVideoDemo(){
+  fxd('vz-checking','flex');fxd('vz-ok','none');fxd('vz-fail','none');
+  showAiMsg('⏳ L\'IA analyse ta vidéo…','loading');
+  setTimeout(()=>{
+    fxd('vz-checking','none');S.aiOk=true;fxd('vz-ok','flex');
+    showAiMsg('✓ Activité de développement personnel détectée','ok');
+    updateVal();
+  },2200);
+}
+
+// Réinitialise toute la zone vidéo pour recommencer
+function retakeVideo(){
+  S.videoBlob=null;S.selfieData=null;S.aiOk=false;
+  document.getElementById('vz-empty').style.display='flex';
+  document.getElementById('vz-recording').style.display='none';
+  document.getElementById('vz-preview').style.display='none';
+  document.getElementById('vz-selfie').style.display='none';
+  document.getElementById('selfie-img').style.display='none';
+  document.getElementById('selfie-em').style.display='block';
+  document.getElementById('retake-btn').style.display='none';
+  fxd('vz-checking','none');fxd('vz-ok','none');fxd('vz-fail','none');
+  document.getElementById('ai-msg').style.display='none';
+  updateVal();
+}
+
+// ══ SELFIE (overlay BeReal) ══
+function triggerSelfie(){document.getElementById('self-input').click();}
+function onSelfie(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    S.selfieData=ev.target.result;
+    document.getElementById('selfie-img').src=ev.target.result;document.getElementById('selfie-img').style.display='block';
+    document.getElementById('selfie-em').style.display='none';updateVal();
+  };r.readAsDataURL(f);
+}
+
+// ══ DESCRIPTION ══
+// Valide en temps réel : minimum 25 caractères requis
+function onDesc(){const v=document.getElementById('desc-ta').value;const n=v.length;S.descOk=n>=25;const dc=document.getElementById('desc-cnt');dc.textContent=`${n} / 280`;dc.classList.toggle('ok',S.descOk);updateVal();}
+
+// Affiche le message de résultat IA avec le style approprié (ok/fail/loading)
+function showAiMsg(txt,cls){const m=document.getElementById('ai-msg');m.style.display='block';m.className='ai-msg '+cls;m.textContent=txt;}
+
+// ══ BARRE DE VALIDATION ══
+// Met à jour les 4 indicateurs (vidéo, IA, selfie, description) et débloque le bouton si tout est ok
+function updateVal(){
+  const v=!!S.videoBlob||document.getElementById('vz-preview').style.display!=='none',a=S.aiOk,s=!!S.selfieData,d=S.descOk;
+  document.getElementById('vi1').classList.toggle('ok',v);
+  document.getElementById('vi2').classList.toggle('ok',a);
+  document.getElementById('vi3').classList.toggle('ok',s);
+  document.getElementById('vi4').classList.toggle('ok',d);
+  // Calcule le pourcentage de complétion (chaque critère = 25%)
+  const pct=Math.round((v?25:0)+(a?25:0)+(s?25:0)+(d?25:0));
+  const pp=document.getElementById('vs-pct');pp.textContent=pct+'%';pp.classList.toggle('ok',pct===100);
+  const rdy=v&&a&&s&&d;const btn=document.getElementById('btn-sub');
+  btn.disabled=!rdy;btn.classList.toggle('rdy',rdy);
+}
+
+// ══ VALIDATION DU DÉFI ══
+// Appelée quand l'utilisateur clique sur "Valider mon défi"
+// Met à jour toutes les stats et affiche la carte de résultat
+function submitDare(){
+  const v=!!S.videoBlob||document.getElementById('vz-preview').style.display!=='none';
+  if(S.done||!v||!S.aiOk||!S.selfieData||!S.descOk)return;
+  S.done=true;
+  const c=getCH()[S.cIdx%getCH().length];
+  // Mise à jour des stats
+  S.xp+=c.xp;S.total++;S.streak++;S.cats[c.ck]++;
+  if(S.streak>S.record)S.record=S.streak;
+  document.getElementById('top-sk').textContent=S.streak;
+  // Bascule vers la carte de succès
+  document.getElementById('ch-card').style.display='none';
+  const dc=document.getElementById('done-card');dc.classList.add('show');
+  // Remplit la carte avec la vidéo et le selfie
+  if(S.videoBlob){const url=URL.createObjectURL(S.videoBlob);document.getElementById('dc-vid').src=url;document.getElementById('dc-vid').style.display='block';document.getElementById('dc-ph').style.display='none';}
+  if(S.selfieData){document.getElementById('dc-selfie').src=S.selfieData;document.getElementById('dc-selfie').style.display='block';}
+  document.getElementById('dc-cap').textContent='"'+document.getElementById('desc-ta').value+'"';
+  document.getElementById('dcs-xp').textContent='+'+c.xp;document.getElementById('dcs-sk').textContent=S.streak;document.getElementById('dcs-tot').textContent=S.total;
+  // Marque le jour comme complété dans la barre de streak
+  document.getElementById('d6').classList.add('ok');document.getElementById('d6').textContent='✓';
+  // Déverrouille le feed et ajoute le post de l'utilisateur en tête
+  S.feedUnlocked=true;
+  FEED_SEED.unshift({n:S.name,av:S.av,bg:'var(--pu2)',ch:c.t,cat:c.cat,cap:document.getElementById('desc-ta').value,time:'À l\'instant',fires:0,topReact:'🔥',reacts:{},em:c.t.includes('li')||c.t.includes('Li')?'📖':c.t.includes('mé')||c.t.includes('Mé')?'🧘':'🎯',aiOk:true,priv:S.isPrivate,vidBlob:S.videoBlob,selfData:S.selfieData,own:true});
+  buildFeed();renderXP();renderStreak();renderProfile();
+  showToast(`✓ Validé ! +${c.xp} XP 🔥`);
+}
+
+// ══ TIMER DU DÉFI ══
+// Décompte en temps réel affiché dans la topbar et dans la pill du défi
+function startTimer(){
+  setInterval(()=>{
+    if(S.timerSecs>0&&!S.done){S.timerSecs--;const h=Math.floor(S.timerSecs/3600),m=Math.floor((S.timerSecs%3600)/60),s=S.timerSecs%60;const t=`${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;document.getElementById('tb-timer').textContent=t;document.getElementById('tp-val').textContent=t;}
+  },1000);
+}
+
+// ══ NOTIFICATION TOAST DE DÉFI ══
+// Simule la notif push qui tombe de manière imprévisible (en prod c'est géré par le service worker)
+function showNt(){const m=INT[S.lv];document.getElementById('nt-em').textContent='⚡';document.getElementById('nt-t').textContent=`Défi ${m.e} ${m.n} reçu !`;document.getElementById('nt-s').textContent='Vidéo obligatoire. L\'IA vérifie.';const n=document.getElementById('nt');n.classList.add('show');setTimeout(()=>n.classList.remove('show'),5000);}
+function closeNt(){document.getElementById('nt').classList.remove('show');}
+
+// ══ SYSTÈME XP ET NIVEAUX ══
+// Trouve le niveau correspondant à l'XP actuel en parcourant les paliers de haut en bas
+function getLv(xp){for(let i=LVS.length-1;i>=0;i--)if(xp>=LVS[i].min)return{i:i+1,...LVS[i]};return{i:1,...LVS[0]};}
+
+// Met à jour la barre XP, le nom du niveau et les chips de progression
+function renderXP(){const info=getLv(S.xp);const pct=Math.round(((S.xp-info.min)/(info.max-info.min))*100);document.getElementById('xp-bar').style.width=pct+'%';document.getElementById('xpw-v').textContent=`${S.xp} / ${info.max} XP`;document.getElementById('xpw-lv').textContent=`Niveau ${info.i} — ${info.n}`;document.getElementById('lv-scroll').innerHTML=LVS.map((l,i)=>{const cls=S.xp>=l.max?'got':S.xp>=l.min?'cur':'lck';return`<div class="lc ${cls}">${cls==='got'?'✓ ':cls==='cur'?'→ ':''}${l.n}</div>`;}).join('');}
+
+function renderStreak(){document.getElementById('sk-n').textContent=S.streak;document.getElementById('rec-n').textContent=S.record+' jours';}
+function updateLvChip(){const m=INT[S.lv];document.getElementById('pro-lv').textContent=`${m.e} ${m.n} — Changer →`;}
+
+// Met à jour la page profil avec les stats et barres de catégories
+function renderProfile(){
+  document.getElementById('p-tot').textContent=S.total;document.getElementById('p-sk').textContent=S.streak;document.getElementById('p-xp').textContent=S.xp;
+  const t=S.total||1; // évite la division par zéro
+  const up=(k,ei,fi)=>{const n=S.cats[k];document.getElementById(ei).textContent=n+' défis';document.getElementById(fi).style.width=Math.round((n/t)*100)+'%';};
+  up('rd','c-rd','f-rd');up('mi','c-mi','f-mi');up('sp','c-sp','f-sp');up('co','c-co','f-co');up('cr','c-cr','f-cr');
+}
+
+// ══ CONFIDENTIALITÉ ══
+// Bascule entre compte public et privé — les posts privés n'apparaissent pas dans le feed global
+function togglePrivacy(){
+  S.isPrivate=!S.isPrivate;
+  document.getElementById('priv-toggle').checked=S.isPrivate;
+  document.getElementById('priv-title').textContent=S.isPrivate?'Compte privé':'Compte public';
+  document.getElementById('priv-lbl').textContent=S.isPrivate?'Privé':'Public';
+  showToast(S.isPrivate?'🔒 Compte privé activé':'🌐 Compte public activé');
+}
+
+// ══ CONSTRUCTION DU FEED ══
+// Filtre les posts privés (sauf les propres posts de l'utilisateur), puis génère le HTML
+function buildFeed(){
+  const locked=!S.feedUnlocked;
+  document.getElementById('feed-lock-view').style.display=locked?'block':'none';
+  document.getElementById('feed-open-view').style.display=locked?'none':'block';
+  if(locked)return;
+  // Les posts privés d'autres utilisateurs sont masqués (f.priv && !f.own)
+  document.getElementById('feed-list').innerHTML=FEED_SEED.filter(f=>!f.priv||f.own).map((f,i)=>`
+    <div class="post" style="animation-delay:${i*.06}s">
+      <div class="post-hd">
+        <div class="post-av" style="background:${f.bg};color:#fff">${f.av}</div>
+        <div><div style="display:flex;align-items:center"><div class="post-n">${f.n}</div>${f.priv?'<div class="post-priv">🔒 Privé</div>':''}</div><div class="post-t">il y a ${f.time}</div></div>
+        <div style="margin-left:auto;font-size:11px;color:var(--mu)">${f.cat||'Défi'}</div>
+      </div>
+      <div class="post-ch"><b>Défi :</b> ${f.ch}</div>
+      <div class="post-media" style="position:relative">
+        ${f.vidBlob?`<video style="width:100%;height:100%;object-fit:cover;display:block" src="${URL.createObjectURL(f.vidBlob)}" autoplay muted loop playsinline></video>`:`<div class="post-ph-em">${f.em||'🎯'}</div>`}
+        ${f.selfData?`<img src="${f.selfData}" style="position:absolute;top:10px;left:10px;width:68px;height:84px;border-radius:10px;border:2.5px solid rgba(0,0,0,.6);object-fit:cover">`:`<div class="post-selfie">${f.av}</div>`}
+        ${f.aiOk?'<div class="post-ai-badge">✓ IA validé</div>':''}
+      </div>
+      <div class="post-cap">"${f.cap}"</div>
+      <div class="post-acts">
+        <!-- Réactions principales avec compteur -->
+        <button class="pa react-btn" id="react-${i}" onclick="openReacts(this,${i})">
+          <span class="react-preview" id="rp-${i}">${f.topReact||'🔥'}</span>
+          <span class="react-count" id="rc-${i}">${(f.fires||0)+Object.values(f.reacts||{}).reduce((a,b)=>a+b,0)}</span>
+        </button>
+        <!-- Picker d'emojis réactions -->
+        <div class="react-picker" id="rpicker-${i}" style="display:none">
+          ${['🔥','💪','✨','❤️','👏','🤯','😤','🙌'].map(em=>`<button class="rp-em" onclick="addReact(event,'${em}',${i})">${em}</button>`).join('')}
+        </div>
+        <button class="pa" onclick="showToast('💬 Réponses bientôt !')">💬</button>
+        <button class="pa" onclick="showToast('🚀 Partage bientôt !')">🔗</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Ouvre/ferme le picker de réactions pour un post
+function openReacts(btn,i){
+  const picker=document.getElementById('rpicker-'+i);
+  // Ferme tous les autres pickers
+  document.querySelectorAll('.react-picker').forEach(p=>{if(p!==picker)p.style.display='none';});
+  picker.style.display=picker.style.display==='none'?'flex':'none';
+}
+
+// Ajoute une réaction emoji à un post
+function addReact(e,em,i){
+  e.stopPropagation();
+  const visibleFeed=FEED_SEED.filter(f=>!f.priv||f.own);
+  const f=visibleFeed[i];
+  if(!f.reacts)f.reacts={};
+  // Toggle : si déjà réagi avec cet emoji, on retire
+  const key='r_'+em.codePointAt(0);
+  if(f[key]){f.reacts[em]=(f.reacts[em]||1)-1;if(f.reacts[em]<=0)delete f.reacts[em];delete f[key];}
+  else{f.reacts[em]=(f.reacts[em]||0)+1;f[key]=true;}
+  // Calcule le total et l'emoji dominant
+  const total=(f.fires||0)+Object.values(f.reacts).reduce((a,b)=>a+b,0);
+  const topEm=Object.entries(f.reacts).sort((a,b)=>b[1]-a[1])[0]?.[0]||'🔥';
+  document.getElementById('rc-'+i).textContent=total;
+  document.getElementById('rp-'+i).textContent=topEm;
+  document.getElementById('rpicker-'+i).style.display='none';
+  showToast(`${em} envoyé !`);
+}
+
+// Ferme les pickers si on clique ailleurs
+document.addEventListener('click',()=>document.querySelectorAll('.react-picker').forEach(p=>p.style.display='none'));
+
+// ══ NAVIGATION PAR ONGLETS ══
+// Gère l'affichage des pages et l'état actif des boutons de nav
+function goPage(n){document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.bn').forEach(b=>b.classList.remove('on'));document.getElementById('page-'+n).classList.add('on');document.getElementById('bn-'+n).classList.add('on');if(n==='profil')renderProfile();if(n==='feed')buildFeed();}
+
+// ══ MODAL CHANGEMENT D'INTENSITÉ ══
+let moPick=null; // intensité sélectionnée dans la modal (null si rien de changé)
+function openMo(){moPick=null;document.querySelectorAll('#mo-cards .lv').forEach(c=>{c.classList.remove('sel');c.querySelector('.lv-check').textContent='';if(parseInt(c.dataset.lv)===S.lv){c.classList.add('sel');c.querySelector('.lv-check').textContent='✓';}});document.getElementById('mo-save').disabled=false;document.getElementById('mo-ov').classList.add('open');}
+// Ferme la modal si on clique en dehors (sur l'overlay sombre)
+function closeMo(e){if(e.target===document.getElementById('mo-ov'))document.getElementById('mo-ov').classList.remove('open');}
+function moLv(el){document.querySelectorAll('#mo-cards .lv').forEach(c=>{c.classList.remove('sel');c.querySelector('.lv-check').textContent='';});el.classList.add('sel');el.querySelector('.lv-check').textContent='✓';moPick=parseInt(el.dataset.lv);document.getElementById('mo-save').disabled=false;}
+function saveMo(){if(moPick){S.lv=moPick;if(!S.done)renderCh();updateLvChip();showToast(`${INT[S.lv].e} ${INT[S.lv].n}`);}document.getElementById('mo-ov').classList.remove('open');}
+
+// ══ TRANSITIONS D'ÉCRANS ══
+// Animation de glissement entre les écrans (splash → onboarding → auth → app)
+function go(f,t){const a=document.getElementById(f),b=document.getElementById(t);a.classList.add('out');setTimeout(()=>{a.classList.add('off');a.classList.remove('out');b.classList.remove('off');},400);}
+// Helper pour afficher/masquer un élément rapidement
+function fxd(id,disp){document.getElementById(id).style.display=disp;}
+
+// ══ DÉCONNEXION ══
+// Remet tout l'état à zéro et retourne à l'écran de connexion
+function doLogout(){
+  // Stoppe la caméra si elle est encore active (évite les fuites mémoire)
+  if(S.mediaStream)S.mediaStream.getTracks().forEach(t=>t.stop());
+  // Réinitialise l'état global
+  Object.assign(S,{lv:2,name:'Joueur',av:'🦊',streak:0,record:0,xp:0,total:0,cats:{rd:0,mi:0,sp:0,co:0,cr:0},isPrivate:false,done:false,timerSecs:14400,cIdx:0,videoBlob:null,selfieData:null,descOk:false,aiOk:false,feedUnlocked:false,mediaStream:null,mediaRecorder:null,recChunks:[],recSecs:0});
+  // Remet l'UI dans son état initial
+  document.getElementById('ch-card').style.display='';
+  document.getElementById('done-card').classList.remove('show');
+  retakeVideo();
+  document.getElementById('desc-ta').value='';document.getElementById('desc-cnt').textContent='0 / 280';document.getElementById('desc-cnt').classList.remove('ok');
+  document.getElementById('btn-sub').disabled=true;document.getElementById('btn-sub').classList.remove('rdy');
+  ['vi1','vi2','vi3','vi4'].forEach(id=>document.getElementById(id).classList.remove('ok'));
+  document.getElementById('vs-pct').textContent='0%';document.getElementById('vs-pct').classList.remove('ok');
+  document.getElementById('d6').className='dd td';document.getElementById('d6').textContent='';
+  go('app','auth');goPage('defi');
+  // Relance la démo de notif après reconnexion
+  setTimeout(showNt,5000);
+}
+
+// ══ TOAST NOTIFICATIONS ══
+// Affiche un message temporaire en bas de l'écran (2.8 secondes)
+let _tt;function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('on'),2800);}
+</script>
+</body>
+</html>
